@@ -18,7 +18,8 @@ const jobSchema = new mongoose.Schema({
         specific_location: { type: String }
     },
     summer_internship: { type: Boolean, default: false },
-    application_deadline: { type: Date, required: true }
+    application_deadline: { type: Date, required: true },
+    approval_status: { type: String, enum: ["Pending", "Approved", "Rejected"], default: "Pending" },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Job", jobSchema);

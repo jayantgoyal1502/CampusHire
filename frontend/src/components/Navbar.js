@@ -7,7 +7,7 @@ const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        navigate("/"); // Redirect to login page
+        navigate("/login"); // Redirect to login page
     };
 
     return (

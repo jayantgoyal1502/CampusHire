@@ -1,5 +1,6 @@
 const express = require("express");
 const Job = require("../models/Job");
+const Student = require("../models/Student");
 const { protect } = require("../middleware/authMiddleware");
 const sendEmail = require("../utils/sendEmail");
 

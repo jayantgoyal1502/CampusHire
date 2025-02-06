@@ -80,4 +80,30 @@ router.get("/applied-jobs", protect, async (req, res) => {
     }
 });
 
+
+// Edit Student Profile
+router.put("/update-profile", protect, async (req, res) => {
+    try {
+        if (!req.user || !req.user.name) {
+            return res.status(403).json({ error: "Access denied. Only students can edit profile." });
+        }
+
+        const student = await Student.findById(req.user._id);
+        if (!student) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+
+        const { phone, cgpa, resume_url } = req.body;
+        if (phone) student.phone = phone;
+        if (cgpa) student.cgpa = cgpa;
+        if (resume_url) student.resume_url = resume_url;
+
+        await student.save();
+        res.json({ message: "Profile updated successfully", student });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 module.exports = router;

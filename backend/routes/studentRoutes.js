@@ -68,4 +68,16 @@ router.get("/", protect, async (req, res) => {
     }
 });
 
+// 🔒 Get Applied Jobs for a Student
+router.get("/applied-jobs", protect, async (req, res) => {
+    try {
+        if(!req.user || !req.user.name) {
+            return res.status(403).json({ error: "Access denied. Only students can view applied jobs." });
+        }
+        res.json(req.user.applied_jobs);
+    } catch (error){
+        res.status(500).json({error: error.message });
+    }
+});
+
 module.exports = router;

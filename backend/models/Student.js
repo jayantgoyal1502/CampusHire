@@ -8,7 +8,8 @@ const studentSchema = new mongoose.Schema({
     branch: { type: String, required: true },
     cgpa: { type: Number, required: true },
     resume_url: { type: String },
-    password: { type: String, required: true } // Add password field
+    password: { type: String, required: true }, 
+    applied_jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job", default: [] }] // ✅ Added applied_jobs field
 }, { timestamps: true });
 
 // Hash password before saving

@@ -32,7 +32,7 @@ const RegisterPage = () => {
             const { data } = await axios.post("http://localhost:5001/api/students/register", requestData);
             console.log("Registration Success:", data);
             localStorage.setItem("token", data.token);
-            navigate("/dashboard");
+            navigate("/dashboard/student");
         } catch (error) {
             console.error("Registration Error:", error.response?.data?.error || "Unknown error");
             alert("Registration failed: " + (error.response?.data?.error || "Unknown error"));

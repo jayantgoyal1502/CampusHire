@@ -12,7 +12,7 @@ const StudentLoginPage = () => {
         try {
             const { data } = await axios.post("http://localhost:5001/api/students/login", { email, password });
             localStorage.setItem("token", data.token);
-            navigate("/dashboard");
+            navigate("/dashboard/student");
         } catch (error) {
             alert("Login failed: " + (error.response?.data?.error || "Unknown error"));
         }

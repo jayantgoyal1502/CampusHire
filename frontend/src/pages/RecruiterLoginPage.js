@@ -12,7 +12,7 @@ const RecruiterLoginPage = () => {
         try {
             const { data } = await axios.post("http://localhost:5001/api/recruiters/login", { contact_email: email, password });
             localStorage.setItem("token", data.token);
-            navigate("/dashboard");
+            navigate("/dashboard/recruiter");
         } catch (error) {
             alert("Login failed: " + (error.response?.data?.error || "Unknown error"));
         }

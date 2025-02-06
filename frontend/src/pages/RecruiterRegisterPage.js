@@ -36,7 +36,7 @@ const RecruiterRegisterPage = () => {
             const { data } = await axios.post("http://localhost:5001/api/recruiters/register", requestData);
             console.log("Registration Success:", data);
             localStorage.setItem("token", data.token);
-            navigate("/dashboard");
+            navigate("/dashboard/recruiter");
         } catch (error) {
             console.error("Registration Error:", error.response?.data?.error || "Unknown error");
             alert("Registration failed: " + (error.response?.data?.error || "Unknown error"));

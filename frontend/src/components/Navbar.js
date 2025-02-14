@@ -11,10 +11,17 @@ const Navbar = () => {
     };
 
     return (
-        <nav style={{ padding: "10px", background: "#f8f8f8", display: "flex", justifyContent: "space-between" }}>
-            <h2>CampusHire</h2>
+        <nav className="bg-gray-800 text-white py-4 px-6 flex justify-between items-center shadow-lg">
+            <h2 className="text-3xl font-bold tracking-wider cursor-pointer" onClick={() => navigate("/")}>
+                CampusHire
+            </h2>
             {token && ( // Show logout button only if token exists
-                <button onClick={handleLogout} style={{ padding: "5px 10px", cursor: "pointer" }}>Logout</button>
+                <button 
+                    onClick={handleLogout} 
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 ease-in-out"
+                >
+                    Logout
+                </button>
             )}
         </nav>
     );

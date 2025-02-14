@@ -108,87 +108,142 @@ const RecruiterDashboard = () => {
     };
 
     return (
-        <div>
-            <h2>Recruiter Dashboard</h2>
+        <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="text-3xl font-semibold text-center mb-6">Recruiter Dashboard</h2>
 
-            <h3>{editingJobId ? "Edit Job" : "Post a New Job"}</h3>
-            <form onSubmit={handleCreateOrUpdateJob}>
-                <label>Job Title:</label>
-                <input
-                    type="text"
-                    placeholder="Job Title"
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                    required
-                />
+            <div className="bg-gray-100 p-4 rounded-lg mb-8">
+                <h3 className="text-2xl font-semibold mb-4">{editingJobId ? "Edit Job" : "Post a New Job"}</h3>
+                <form onSubmit={handleCreateOrUpdateJob} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium">Job Title</label>
+                        <input
+                            type="text"
+                            placeholder="Job Title"
+                            value={jobTitle}
+                            onChange={(e) => setJobTitle(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            required
+                        />
+                    </div>
 
-                <label>Job Description:</label>
-                <textarea
-                    placeholder="Job Description"
-                    value={jobDescription}
-                    onChange={(e) => setJobDescription(e.target.value)}
-                    required
-                />
+                    <div>
+                        <label className="block text-sm font-medium">Job Description</label>
+                        <textarea
+                            placeholder="Job Description"
+                            value={jobDescription}
+                            onChange={(e) => setJobDescription(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            required
+                        />
+                    </div>
 
-                <label>Application Deadline:</label>
-                <input
-                    type="date"
-                    value={applicationDeadline}
-                    onChange={(e) => setApplicationDeadline(e.target.value)}
-                    required
-                />
+                    <div>
+                        <label className="block text-sm font-medium">Application Deadline</label>
+                        <input
+                            type="date"
+                            value={applicationDeadline}
+                            onChange={(e) => setApplicationDeadline(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            required
+                        />
+                    </div>
 
-                <label>Fixed Salary:</label>
-                <input
-                    type="number"
-                    placeholder="Fixed Salary"
-                    value={fixedSalary}
-                    onChange={(e) => setFixedSalary(e.target.value)}
-                    required
-                />
+                    <div>
+                        <label className="block text-sm font-medium">Fixed Salary</label>
+                        <input
+                            type="number"
+                            placeholder="Fixed Salary"
+                            value={fixedSalary}
+                            onChange={(e) => setFixedSalary(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            required
+                        />
+                    </div>
 
-                <label>Bonus (Optional):</label>
-                <input
-                    type="number"
-                    placeholder="Bonus"
-                    value={bonus}
-                    onChange={(e) => setBonus(e.target.value)}
-                />
+                    <div>
+                        <label className="block text-sm font-medium">Bonus (Optional)</label>
+                        <input
+                            type="number"
+                            placeholder="Bonus"
+                            value={bonus}
+                            onChange={(e) => setBonus(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        />
+                    </div>
 
-                <button type="submit">{editingJobId ? "Update Job" : "Post Job"}</button>
-                {editingJobId && <button type="button" onClick={resetForm}>Cancel</button>}
-            </form>
+                    <div className="flex space-x-4">
+                        <button
+                            type="submit"
+                            className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none"
+                        >
+                            {editingJobId ? "Update Job" : "Post Job"}
+                        </button>
+                        {editingJobId && (
+                            <button
+                                type="button"
+                                onClick={resetForm}
+                                className="px-6 py-2 bg-gray-400 text-white font-semibold rounded-md hover:bg-gray-500 focus:outline-none"
+                            >
+                                Cancel
+                            </button>
+                        )}
+                    </div>
+                </form>
+            </div>
 
-            <h3>Your Job Listings</h3>
+            <h3 className="text-2xl font-semibold mb-4">Your Job Listings</h3>
             {jobs.length === 0 ? (
                 <p>No jobs posted yet.</p>
             ) : (
-                <ul>
+                <ul className="space-y-6">
                     {jobs.map((job) => (
-                        <li key={job._id}>
-                            <strong>{job.job_title}</strong> - {job.job_description}
-                            <br />
-                            <span>📅 Deadline: {job.application_deadline}</span>
-                            <br />
-                            <span>💰 Fixed Salary: {job.compensation?.fixed_salary}</span>
-                            <br />
-                            <span>🎁 Bonus: {job.compensation?.bonus}</span>
-                            <br />
-                            <button onClick={() => handleEditJob(job)}>✏️ Edit</button>
-                            <button onClick={() => handleDeleteJob(job._id)}>❌ Delete</button>
-                            <br />
-                            <h4>Applicants</h4>
+                        <li key={job._id} className="bg-gray-50 p-4 rounded-lg shadow-md">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <strong className="text-xl font-semibold">{job.job_title}</strong>
+                                    <p className="text-sm text-gray-500">{job.job_description}</p>
+                                </div>
+                                <div>
+                                    <button
+                                        onClick={() => handleEditJob(job)}
+                                        className="bg-blue-500 text-white py-1 px-4 rounded-md hover:bg-blue-600"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteJob(job._id)}
+                                        className="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 ml-2"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            <p className="mt-2 text-sm text-gray-600">📅 Deadline: {job.application_deadline}</p>
+                            <p className="mt-2 text-sm text-gray-600">💰 Fixed Salary: {job.compensation?.fixed_salary}</p>
+                            <p className="mt-2 text-sm text-gray-600">🎁 Bonus: {job.compensation?.bonus}</p>
+
+                            <h4 className="mt-4 font-semibold">Applicants</h4>
                             {job.applicants?.length > 0 ? (
                                 <ul>
                                     {job.applicants.map((applicant) => (
-                                        <li key={applicant._id}>
-                                            {applicant.name} - {applicant.email}
-                                            <button onClick={() => handleApplicationStatus(job._id, applicant._id, "Accepted")}>
-                                                ✅ Accept
-                                            </button>
-                                            <button onClick={() => handleApplicationStatus(job._id, applicant._id, "Rejected")}>
-                                                ❌ Reject
-                                            </button>
+                                        <li key={applicant._id} className="flex justify-between items-center py-2">
+                                            <div>
+                                                <p>{applicant.name} - {applicant.email}</p>
+                                            </div>
+                                            <div>
+                                                <button
+                                                    onClick={() => handleApplicationStatus(job._id, applicant._id, "Accepted")}
+                                                    className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600"
+                                                >
+                                                    Accept
+                                                </button>
+                                                <button
+                                                    onClick={() => handleApplicationStatus(job._id, applicant._id, "Rejected")}
+                                                    className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 ml-2"
+                                                >
+                                                    Reject
+                                                </button>
+                                            </div>
                                         </li>
                                     ))}
                                 </ul>

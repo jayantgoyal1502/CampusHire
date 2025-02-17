@@ -4,6 +4,7 @@ import axios from "axios";
 
 const RecruiterDashboard = () => {
     const [jobs, setJobs] = useState([]);
+    const [orgName, setOrgName] = useState("");
     const [jobTitle, setJobTitle] = useState("");
     const [jobDescription, setJobDescription] = useState("");
     const [applicationDeadline, setApplicationDeadline] = useState("");
@@ -38,6 +39,7 @@ const RecruiterDashboard = () => {
 
         const requestData = {
             job_title: jobTitle,
+            org_name: orgName,
             job_description: jobDescription,
             application_deadline: applicationDeadline,
             compensation: {
@@ -77,6 +79,7 @@ const RecruiterDashboard = () => {
 
     const handleEditJob = (job) => {
         setEditingJobId(job._id);
+        setJobTitle(job.org_name);
         setJobTitle(job.job_title);
         setJobDescription(job.job_description);
         setApplicationDeadline(job.application_deadline);
@@ -113,7 +116,19 @@ const RecruiterDashboard = () => {
 
             <div className="bg-gray-100 p-4 rounded-lg mb-8">
                 <h3 className="text-2xl font-semibold mb-4">{editingJobId ? "Edit Job" : "Post a New Job"}</h3>
-                <form onSubmit={handleCreateOrUpdateJob} className="space-y-4">
+                <form onSubmit={handleCreateOrUpdateJob} className="space-y-4">                
+                    <div>
+                        <label className="block text-sm font-medium">Organisation Name</label>
+                        <input
+                            type="text"
+                            placeholder="Org Name"
+                            value={orgName}
+                            onChange={(e) => setOrgName(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            required
+                        />
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium">Job Title</label>
                         <input

@@ -167,6 +167,8 @@ const StudentDashboard = () => {
                 <ul className="space-y-4">
                     {jobs.map((job) => (
                         <li key={job._id} className="border-b py-2">
+                            <strong>{job.org_name}</strong>
+                            <br />
                             <strong>{job.job_title}</strong> - {job.job_description}
                             <br />
                             <span>📅 Deadline: {job.application_deadline}</span>

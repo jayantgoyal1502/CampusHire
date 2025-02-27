@@ -37,6 +37,13 @@ const HomePage = () => {
                     >
                         Recruiter
                     </Link>
+                    <span>|</span>
+                    <Link
+                        to="/login/admin"
+                        className="text-xl text-blue-500 hover:text-blue-700 ml-4"
+                    >
+                        Admin
+                    </Link>
                 </div>
             </div>
         </div>

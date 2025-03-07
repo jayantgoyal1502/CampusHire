@@ -94,7 +94,7 @@ const StudentDashboard = () => {
 
             {/* Profile Section */}
             <section className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-2xl font-semibold text-gray-700">👤 Your Profile</h3>
+                <h3 className="text-2xl font-semibold text-gray-700">👤 {profile.name}'s Profile</h3>
                 <button
                     onClick={() => setEditMode(!editMode)}
                     className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
@@ -154,7 +154,7 @@ const StudentDashboard = () => {
                     <ul className="space-y-4">
                         {appliedJobs.map((job) => (
                             <li key={job._id} className="border-b py-2">
-                                <strong>{job.job_title}</strong> - <span>Status: {job.status || "Pending"}</span>
+                                <strong>{job.org_name}: {job.job_title}</strong> - <span>Status: {job.status || "Pending"}</span>
                             </li>
                         ))}
                     </ul>

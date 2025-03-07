@@ -4,15 +4,93 @@ const bcrypt = require("bcryptjs");
 const studentSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true },
+    phone: { 
+        type: String, 
+        required: true, 
+        match: [/^\d{10}$/, "Invalid phone number"] 
+    },
+    roll_number: { type: Number, required: true, unique: true }, 
+    course: { 
+        type: String, 
+        enum: ["B.Tech", "M.Tech", "PhD"], 
+        require: true,
+    },
+    graduation_year: { 
+        type: Number, 
+    },
     branch: { type: String, required: true },
-    cgpa: { type: Number, required: true },
-    resume_url: { type: String },
+    cgpa: { 
+        type: Number, 
+        required: true, 
+        min: 0, 
+        max: 10 
+    },
+    skills: [{ type: String }], // ✅ Array of skills
+    linkedin_url: { 
+        type: String, 
+        validate: {
+            validator: function(v) {
+                return /^https?:\/\/(www\.)?linkedin\.com\/.*$/.test(v);
+            },
+            message: "Invalid LinkedIn URL"
+        }
+    },
+    github_url: { 
+        type: String, 
+        validate: {
+            validator: function(v) {
+                return /^https?:\/\/(www\.)?github\.com\/.*$/.test(v);
+            },
+            message: "Invalid GitHub URL"
+        }
+    },
+    preferred_location: [{ type: String }],
+    projects: [{ 
+        title: { type: String, required: true },
+        description: { type: String }
+    }],
+    resume_url: { 
+        type: String, 
+        validate: {
+            validator: function(v) {
+                return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
+            },
+            message: "Invalid resume URL"
+        }
+    },
+    // resumes: [
+    //     {
+    //         category: {
+    //             type: String,
+    //             enum: ["Software", "Engineering", "Finance", "Other"],
+    //             required: true
+    //         },
+    //         resume_url: {
+    //             type: String,
+    //             validate: {
+    //                 validator: function(v) {
+    //                     return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
+    //                 },
+    //                 message: "Invalid resume URL"
+    //             },
+    //             required: true
+    //         }
+    //     }
+    // ],
+    placement_type: { 
+        type: String, 
+        enum: ["Internship", "Placement"], 
+    },
+    placement_status: {
+        type: String,
+        enum: ["Unplaced","Single Offer","Double Offer"],
+        default: "Unplaced"
+    },
     password: { type: String, required: true }, 
-    applied_jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job", default: [] }] // ✅ Added applied_jobs field
+    applied_jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job", default: [] }] 
+
 }, { timestamps: true });
 
-// Hash password before saving
 studentSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
     const salt = await bcrypt.genSalt(10);
@@ -20,7 +98,6 @@ studentSchema.pre("save", async function (next) {
     next();
 });
 
-// Compare entered password with hashed password
 studentSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };

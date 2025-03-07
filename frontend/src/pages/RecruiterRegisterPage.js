@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaBuilding, FaEnvelope, FaLock, FaUser, FaBriefcase, FaPhone, FaIndustry, FaGlobe} from "react-icons/fa";
 
 const RecruiterRegisterPage = () => {
     const [orgName, setOrgName] = useState("");
@@ -12,6 +13,7 @@ const RecruiterRegisterPage = () => {
     const [participationType, setParticipationType] = useState("");
     const [sector, setSector] = useState("");
     const [category, setCategory] = useState("");
+    const [website, setWebsite] = useState("");
 
     const navigate = useNavigate();
 
@@ -21,6 +23,7 @@ const RecruiterRegisterPage = () => {
         const requestData = {
             org_name: orgName,
             contact_email: email,
+            website,
             password,
             contact_name: contactPerson,
             contact_designation: designation,
@@ -43,128 +46,144 @@ const RecruiterRegisterPage = () => {
         }
     };
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-center text-3xl font-bold text-gray-900">Recruiter Registration</h2>
-                <form className="mt-8 space-y-6" onSubmit={handleRegister}>
-                    <div className="rounded-md shadow-sm -space-y-px">
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Organization Name"
-                                value={orgName}
-                                onChange={(e) => setOrgName(e.target.value)}
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Contact Person"
-                                value={contactPerson}
-                                onChange={(e) => setContactPerson(e.target.value)}
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Designation"
-                                value={designation}
-                                onChange={(e) => setDesignation(e.target.value)}
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Phone"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            />
-                        </div>
-                    </div>
 
-                    <div>
-                        <select
-                            value={participationType}
-                            onChange={(e) => setParticipationType(e.target.value)}
-                            required
-                            className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        >
-                            <option value="">Select Participation Type</option>
-                            <option value="Virtual">Virtual</option>
-                            <option value="On-Campus">On-Campus</option>
-                        </select>
-                    </div>
-
-                    <div>
+return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-center text-3xl font-extrabold text-gray-900">🚀 Recruiter Registration</h2>
+            <form className="mt-8 space-y-6" onSubmit={handleRegister}>
+                <div className="rounded-md shadow-sm space-y-4">
+                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                        <FaBuilding className="text-gray-500 mr-3" />
                         <input
                             type="text"
-                            placeholder="Sector"
-                            value={sector}
-                            onChange={(e) => setSector(e.target.value)}
+                            placeholder="Organization Name"
+                            value={orgName}
+                            onChange={(e) => setOrgName(e.target.value)}
                             required
-                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            className="w-full focus:outline-none"
                         />
                     </div>
-
-                    <div>
-                        <select
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
+                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                        <FaEnvelope className="text-gray-500 mr-3" />
+                        <input
+                            type="email"
+                            placeholder="Contact Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        >
-                            <option value="">Select Category</option>
-                            <option value="Govt">Govt</option>
-                            <option value="PSU">PSU</option>
-                            <option value="Private">Private</option>
-                            <option value="MNC">MNC</option>
-                            <option value="Startup">Startup</option>
-                            <option value="NGO">NGO</option>
-                            <option value="Other">Other</option>
-                        </select>
+                            className="w-full focus:outline-none"
+                        />
                     </div>
-
-                    <div>
-                        <button
-                            type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Register
-                        </button>
+                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                        <FaLock className="text-gray-500 mr-3" />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="w-full focus:outline-none"
+                        />
                     </div>
-                </form>
-            </div>
+                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                        <FaUser className="text-gray-500 mr-3" />
+                        <input
+                            type="text"
+                            placeholder="Contact Person"
+                            value={contactPerson}
+                            onChange={(e) => setContactPerson(e.target.value)}
+                            required
+                            className="w-full focus:outline-none"
+                        />
+                    </div>
+                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                        <FaBriefcase className="text-gray-500 mr-3" />
+                        <input
+                            type="text"
+                            placeholder="Designation"
+                            value={designation}
+                            onChange={(e) => setDesignation(e.target.value)}
+                            required
+                            className="w-full focus:outline-none"
+                        />
+                    </div>
+                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                        <FaPhone className="text-gray-500 mr-3" />
+                        <input
+                            type="text"
+                            placeholder="Phone"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            required
+                            className="w-full focus:outline-none"
+                        />
+                    </div>
+                </div>
+                <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                        <FaGlobe className="text-gray-500 mr-3" />
+                        <input
+                            type="url"
+                            placeholder="Website Link"
+                            value={website}
+                            onChange={(e) => setWebsite(e.target.value)}
+                            required
+                            className="w-full focus:outline-none"
+                        />
+                    </div>
+                <div>
+                    <select
+                        value={participationType}
+                        onChange={(e) => setParticipationType(e.target.value)}
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
+                    >
+                        <option value="">Select Participation Type</option>
+                        <option value="Virtual">Virtual</option>
+                        <option value="On-Campus">On-Campus</option>
+                    </select>
+                </div>
+                <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                    <FaIndustry className="text-gray-500 mr-3" />
+                    <input
+                        type="text"
+                        placeholder="Sector"
+                        value={sector}
+                        onChange={(e) => setSector(e.target.value)}
+                        required
+                        className="w-full focus:outline-none"
+                    />
+                </div>
+                <div>
+                    <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
+                    >
+                        <option value="">Select Category</option>
+                        <option value="Govt">Govt</option>
+                        <option value="PSU">PSU</option>
+                        <option value="Private">Private</option>
+                        <option value="MNC">MNC</option>
+                        <option value="Startup">Startup</option>
+                        <option value="NGO">NGO</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <button
+                        type="submit"
+                        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Register
+                    </button>
+                </div>
+            </form>
         </div>
-    );
+    </div>
+);
+
 };
 
 export default RecruiterRegisterPage;

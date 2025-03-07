@@ -8,6 +8,8 @@ const router = express.Router();
 // Route: Register a new recruiter
 router.post("/register", async (req, res) => {
     try {
+        console.log("Received Data:", req.body); // Debugging line
+
         const { contact_email } = req.body;
 
         // Check if recruiter already exists
@@ -25,11 +27,14 @@ router.post("/register", async (req, res) => {
             org_name: recruiter.org_name,
             contact_email: recruiter.contact_email,
             token: generateToken(recruiter._id),
+            message: "Company registered successfully!"
         });
     } catch (error) {
+        console.error("Error in Registration:", error.message);
         res.status(400).json({ error: error.message });
     }
 });
+
 
 // Route: Recruiter login
 router.post("/login", async (req, res) => {

@@ -5,6 +5,7 @@ import axios from "axios";
 const RegisterPage = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [rollnum, setRollnum] = useState("");
     const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
     const [branch, setBranch] = useState("");
@@ -19,6 +20,7 @@ const RegisterPage = () => {
         const requestData = {
             name,
             email,
+            rollnum,
             password,
             phone,
             branch,
@@ -63,6 +65,16 @@ const RegisterPage = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <input
+                                type="number"
+                                placeholder="Roll Number"
+                                value={rollnum}
+                                onChange={(e) => setRollnum(e.target.value)}
+                                required
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             />
                         </div>
                         <div>

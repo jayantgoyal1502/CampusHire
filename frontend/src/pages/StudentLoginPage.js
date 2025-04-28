@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const StudentLoginPage = () => {
-    const [email, setEmail] = useState("");
+    const [rollnum, setRollnum] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post("http://localhost:5001/api/students/login", { email, password });
+            const { data } = await axios.post("http://localhost:5001/api/students/login", { rollnum, password });
             localStorage.setItem("token", data.token);
             navigate("/dashboard/student");
         } catch (error) {
@@ -26,10 +26,10 @@ const StudentLoginPage = () => {
                     <div className="rounded-md shadow-sm -space-y-px">
                         <div>
                             <input
-                                type="email"
-                                placeholder="Email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                type="rollnum"
+                                placeholder="Roll Number"
+                                value={rollnum}
+                                onChange={(e) => setRollnum(e.target.value)}
                                 required
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             />

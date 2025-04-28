@@ -8,7 +8,7 @@ const router = express.Router();
 // Register a new student
 router.post("/register", async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { rollnum, password } = req.body;
 
         // Check if student already exists
         const existingStudent = await Student.findOne({ email });
@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
         res.status(201).json({
             _id: student._id,
             name: student.name,
-            email: student.email,
+            rollnum: student.rollnum,
             token: generateToken(student._id),
         });
     } catch (error) {
@@ -34,15 +34,15 @@ router.post("/register", async (req, res) => {
 // Student login
 router.post("/login", async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { rollnum, password } = req.body;
 
-        const student = await Student.findOne({ email });
+        const student = await Student.findOne({ rollnum });
 
         if (student && (await student.matchPassword(password))) {
             res.json({
                 _id: student._id,
                 name: student.name,
-                email: student.email,
+                rollnum: student.rollnum,
                 token: generateToken(student._id),
             });
         } else {

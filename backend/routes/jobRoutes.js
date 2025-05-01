@@ -152,4 +152,15 @@ router.get("/students/applied-jobs", protect, async (req, res) => {
     }
 });
 
+// 🔒 Get a single job by ID
+router.get("/:jobId", protect, async (req, res) => {
+    try {
+        const job = await Job.findById(req.params.jobId).populate("company_id", "org_name");
+        if (!job) return res.status(404).json({ error: "Job not found" });
+        res.json(job);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;

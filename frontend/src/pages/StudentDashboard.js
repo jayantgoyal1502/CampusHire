@@ -31,22 +31,26 @@ const StudentDashboard = () => {
     };
 
     // Fetch applied jobs with full details
-    const fetchAppliedJobs = async () => {
-        try {
-            const { data: appliedJobIds } = await axios.get("http://localhost:5001/api/students/applied-jobs", {
+const fetchAppliedJobs = async () => {
+    try {
+        const { data: appliedJobIds } = await axios.get("http://localhost:5001/api/students/applied-jobs", {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const jobDetailsPromises = appliedJobIds.map((jobId) =>
+            axios.get(`http://localhost:5001/api/jobs/${jobId}`, {
                 headers: { Authorization: `Bearer ${token}` },
-            });
+            }).then((res) => res.data).catch(() => null)
+        );
 
-            // Fetch matching job details for applied job IDs
-            const matchedJobs = appliedJobIds.map((jobId) =>
-                jobs.find((job) => job._id === jobId) || { _id: jobId, job_title: "Unknown Job", status: "Pending" }
-            );
+        const fullJobs = await Promise.all(jobDetailsPromises);
+        const filtered = fullJobs.filter((j) => j !== null);
+        setAppliedJobs(filtered);
+    } catch (error) {
+        console.error("Error fetching applied jobs", error);
+    }
+};
 
-            setAppliedJobs(matchedJobs);
-        } catch (error) {
-            console.error("Error fetching applied jobs", error);
-        }
-    };
 
     // Fetch student profile details
     const fetchStudentProfile = async () => {

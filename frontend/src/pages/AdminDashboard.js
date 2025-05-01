@@ -38,21 +38,29 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        navigate("/login/admin");
+    };
+
     return (
         <div>
-            <h2>📊 Admin Dashboard</h2>
+            <h2>📊 Placement Admin Dashboard</h2>
+            <button onClick={handleLogout} style={{ marginBottom: "20px" }}>Logout</button>
 
             {/* Jobs Section */}
             <h3>📌 All Jobs</h3>
-            {jobs.length === 0 ? <p>No jobs posted yet.</p> : (
+            {jobs.length === 0 ? (
+                <p>No jobs posted yet.</p>
+            ) : (
                 <ul>
                     {jobs.map((job) => (
                         <li key={job._id}>
                             <strong>{job.job_title}</strong> - {job.company_id?.org_name || "Unknown Company"}
                             <br />
-                            <span>📅 Deadline: {job.application_deadline}</span>
+                            📅 Deadline: {job.application_deadline}
                             <br />
-                            <span>💰 Salary: {job.compensation?.fixed_salary}</span>
+                            💰 Salary: {job.compensation?.fixed_salary}
                         </li>
                     ))}
                 </ul>
@@ -60,13 +68,15 @@ const AdminDashboard = () => {
 
             {/* Students Section */}
             <h3>🎓 All Students</h3>
-            {students.length === 0 ? <p>No students registered yet.</p> : (
+            {students.length === 0 ? (
+                <p>No students registered yet.</p>
+            ) : (
                 <ul>
                     {students.map((student) => (
                         <li key={student._id}>
-                            <strong>{student.name}</strong> - {student.email}
+                            <strong>{student.name}</strong> ({student.email})
                             <br />
-                            <span>📚 Branch: {student.branch}</span> | <span>📊 CGPA: {student.cgpa}</span>
+                            📚 Branch: {student.branch} | 📊 CGPA: {student.cgpa}
                         </li>
                     ))}
                 </ul>
@@ -74,13 +84,15 @@ const AdminDashboard = () => {
 
             {/* Recruiters Section */}
             <h3>🏢 All Recruiters</h3>
-            {recruiters.length === 0 ? <p>No recruiters registered yet.</p> : (
+            {recruiters.length === 0 ? (
+                <p>No recruiters registered yet.</p>
+            ) : (
                 <ul>
                     {recruiters.map((recruiter) => (
                         <li key={recruiter._id}>
-                            <strong>{recruiter.org_name}</strong> - {recruiter.contact_email}
+                            <strong>{recruiter.org_name}</strong> ({recruiter.contact_email})
                             <br />
-                            <span>📞 Contact: {recruiter.contact_phone}</span>
+                            📞 Contact: {recruiter.contact_phone}
                         </li>
                     ))}
                 </ul>

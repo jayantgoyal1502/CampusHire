@@ -202,6 +202,7 @@ const RecruiterDashboard = () => {
                                 <div>
                                     <strong className="text-xl font-semibold">{job.job_title}</strong>
                                     <p className="text-sm text-gray-500">{job.job_description}</p>
+                                    <p className="text-sm text-gray-500">Posted by: {job.company_id?.org_name || "Unknown Company"}</p>
                                 </div>
                                 <div>
                                     <button

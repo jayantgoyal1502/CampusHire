@@ -11,7 +11,7 @@ router.post("/register", async (req, res) => {
         const { rollnum, password } = req.body;
 
         // Check if student already exists
-        const existingStudent = await Student.findOne({ email });
+        const existingStudent = await Student.findOne({ rollnum });
         if (existingStudent) {
             return res.status(400).json({ error: "Student already exists" });
         }

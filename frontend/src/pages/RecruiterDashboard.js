@@ -19,6 +19,12 @@ const RecruiterDashboard = () => {
     const branchesList = ["CSE", "IT", "ECE", "EE", "IPE", "TT", "Civil", "ME", "BT"];
 
     useEffect(() => {
+        if (company?.org_name) {
+          setOrgName(company.org_name);
+        }
+      }, [company]);     
+
+    useEffect(() => {
         fetchJobs();
         fetchCompanyDetails();
     }, []);
@@ -62,6 +68,7 @@ const RecruiterDashboard = () => {
                 fixed_salary: fixedSalary,
                 variable_component: bonus || 0, // Default to 0 if empty
             },
+            branches_eligible: branchesEligible,
         };
 
         try {
@@ -112,20 +119,21 @@ const RecruiterDashboard = () => {
         setBranchesEligible(job.branches_eligible);
     };
 
-    const handleApplicationStatus = async (jobId, studentId, status) => {
+    const handleApplicationStatus = async (applicationId, status) => {
         try {
+            const url = `http://localhost:5001/api/applications/status/${applicationId}`;
             await axios.put(
-                `http://localhost:5001/api/jobs/${jobId}/applications/${studentId}`,
-                { status },
+                url,
+                { approval_status: status === "approved" ? "Selected" : "Rejected" },
                 { headers: { Authorization: `Bearer ${token}` } }
-            );
+            );    
             alert(`Application ${status} successfully`);
             fetchJobs();
         } catch (error) {
             alert("Failed to update application status");
         }
     };
-
+    
     const resetForm = () => {
         setEditingJobId(null);
         setJobTitle("");

@@ -14,6 +14,28 @@ router.post("/apply", async (req, res) => {
     }
 });
 
+router.put("/status/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { approval_status } = req.body;
+
+        if (!["Selected", "Rejected"].includes(approval_status)) {
+            return res.status(400).json({ error: "Invalid status value" });
+        }
+
+        const updatedStatus = await Application.findByIdAndUpdate(
+            id,
+            { approval_status },
+            { new: true }
+        );
+
+        res.json(updatedStatus);
+        console.log(`Application ${approval_status}`);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 // Route: Get all applications
 router.get("/", async (req, res) => {
     try {

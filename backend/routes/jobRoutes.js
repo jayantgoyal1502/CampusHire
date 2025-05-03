@@ -37,11 +37,12 @@ router.get("/", protect, async (req, res) => {
 // 🔒 Get jobs posted by the logged-in recruiter
 router.get("/recruiter", protect, async (req, res) => {
     try {
+        console.log("Recruiter Check - Authenticated user:", req.user);
         if (!req.user || !req.user.org_name) {
             return res.status(403).json({ error: "Access denied. Only recruiters can view their jobs." });
         }
 
-        const jobs = await Job.find({ company_id: req.user._id });
+        const jobs = await Job.find({ company_id: req.user._id }).populate("company_id", "org_name contact_email").populate("applicants", "name email");
         res.json(jobs);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -68,6 +69,10 @@ router.post("/:jobId/apply", protect, async (req, res) => {
         // Add job to student's applied list
         req.user.applied_jobs.push(job._id);
         await req.user.save();
+
+        // Add student to job's applicants list
+        job.applicants.push(req.user._id);
+        await job.save();
 
         // Send confirmation email to student
         await sendEmail(
@@ -142,6 +147,17 @@ router.get("/students/applied-jobs", protect, async (req, res) => {
             return res.status(403).json({ error: "Access denied. Only students can view applied jobs." });
         }
         res.json(req.user.applied_jobs);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// 🔒 Get a single job by ID
+router.get("/:jobId", protect, async (req, res) => {
+    try {
+        const job = await Job.findById(req.params.jobId).populate("company_id", "org_name");
+        if (!job) return res.status(404).json({ error: "Job not found" });
+        res.json(job);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

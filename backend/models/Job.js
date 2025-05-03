@@ -50,12 +50,19 @@ const jobSchema = new mongoose.Schema(
                 message: "Application deadline must be in the future"
             }
         },
+        applicants: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Student",
+            }
+        ],
         job_status: { 
             type: String, 
             enum: ["Active", "Expired"], 
             default: "Active" 
         }
     }, 
+
     { timestamps: true }
 );
 

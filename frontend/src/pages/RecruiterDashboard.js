@@ -271,6 +271,7 @@ const RecruiterDashboard = () => {
                                 <div>
                                     <h4 className="text-xl font-semibold">{job.job_title}</h4>
                                     <p className="text-sm text-gray-500">{job.job_description}</p>
+                                    <p className="text-sm text-gray-500">Posted by: {job.company_id?.org_name || "Unknown Company"}</p>
                                 </div>
                                 <div>
                                     <button onClick={() => handleEditJob(job)} className="bg-blue-500 text-white py-1 px-4 rounded-md hover:bg-blue-600">

@@ -7,12 +7,13 @@ import StudentResumeUpload from "../components/StudentResumeUpload";
 const RegisterPage = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [rollnum, setRollnum] = useState("");
     const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
     const [branch, setBranch] = useState("");
     const [cgpa, setCgpa] = useState("");
     const [resumeUrl, setResumeUrl] = useState("");
-    const [roll, setRoll] = useState("");
+    
     const [course, setCourse] = useState("");
     const [year, setYear] = useState("");
 
@@ -24,12 +25,12 @@ const RegisterPage = () => {
         const requestData = {
             name,
             email,
+            rollnum,
             password,
             phone,
             branch,
             graduation_year: year,
             cgpa,
-            roll_number: roll,
             resume_url: resumeUrl,
         };
 
@@ -51,7 +52,7 @@ const RegisterPage = () => {
                       { label: "Email", value: email, setValue: setEmail, icon: <FaEnvelope />, type: "email" },
                       { label: "Password", value: password, setValue: setPassword, icon: <FaLock />, type: "password" },
                       { label: "Phone Number", value: phone, setValue: setPhone, icon: <FaPhone /> },
-                      { label: "Roll Number", value: roll, setValue: setRoll, icon: <FaIdBadge /> },
+                      { label: "Roll Number", value: rollnum, setValue: setRollnum, icon: <FaIdBadge /> },
                       { label: "Branch", value: branch, setValue: setBranch, icon: <FaGraduationCap /> },
                       { label: "CGPA", value: cgpa, setValue: setCgpa, icon: <FaGraduationCap />, type: "number" },
                       { label: "Graduation Year", value: year, setValue: setYear, icon: <FaGraduationCap />, type: "number" },

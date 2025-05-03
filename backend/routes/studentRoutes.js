@@ -3,7 +3,53 @@ const Student = require("../models/Student");
 const generateToken = require("../utils/generateToken");
 const { protect } = require("../middleware/authMiddleware");
 
+const multer = require("multer");
+const path = require("path");
+
 const router = express.Router();
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/resumes"); // Store resumes in 'uploads/resumes'
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${req.user._id}_${Date.now()}${path.extname(file.originalname)}`);
+    },
+});
+
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === "application/pdf") {
+            cb(null, true);
+        } else {
+            cb(new Error("Only PDF files are allowed!"));
+        }
+    },
+});
+
+// 🔒 API to Upload Resume
+router.post("/upload-resume", upload.single("resume"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const student = await Student.findById(req.user._id);
+        if (!student) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+
+        // Save the resume URL to the database
+        student.resume_url = `/uploads/resumes/${req.file.filename}`;
+        await student.save();
+
+        res.json({ fileUrl: student.resume_url });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 // Register a new student
 router.post("/register", async (req, res) => {

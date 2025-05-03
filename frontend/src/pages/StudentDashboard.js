@@ -98,7 +98,7 @@ const fetchAppliedJobs = async () => {
 
             {/* Profile Section */}
             <section className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-2xl font-semibold text-gray-700">👤 Your Profile</h3>
+                <h3 className="text-2xl font-semibold text-gray-700">👤 {profile.name}'s Profile</h3>
                 <button
                     onClick={() => setEditMode(!editMode)}
                     className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
@@ -144,6 +144,7 @@ const fetchAppliedJobs = async () => {
                         <p><strong>📞 Phone:</strong> {profile.phone}</p>
                         <p><strong>📊 CGPA:</strong> {profile.cgpa}</p>
                         <p><strong>📄 Resume:</strong> <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="text-blue-500">View Resume</a></p>
+                        <p>Don't have a resume? Or want a better resume? <a href="https://www.overleaf.com/latex/templates/nit-jalandhar-resume/xfjnhnxsbzbk" target="_blank" rel="noopener noreferrer" className="text-blue-500">Click here</a></p>
                     </div>
                 )}
             </section>
@@ -157,7 +158,7 @@ const fetchAppliedJobs = async () => {
                     <ul className="space-y-4">
                         {appliedJobs.map((job) => (
                             <li key={job._id} className="border-b py-2">
-                                <strong>{job.job_title}</strong> - <span>Status: {job.status || "Pending"}</span>
+                                <strong>{job.org_name}: {job.job_title}</strong> - <span>Status: {job.status || "Pending"}</span>
                             </li>
                         ))}
                     </ul>
@@ -170,6 +171,8 @@ const fetchAppliedJobs = async () => {
                 <ul className="space-y-4">
                     {jobs.map((job) => (
                         <li key={job._id} className="border-b py-2">
+                            <strong>{job.org_name}</strong>
+                            <br />
                             <strong>{job.job_title}</strong> - {job.job_description}
                             <br />
                             <span>📅 Deadline: {job.application_deadline}</span>

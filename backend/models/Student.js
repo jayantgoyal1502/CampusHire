@@ -9,7 +9,7 @@ const studentSchema = new mongoose.Schema({
         required: true, 
         match: [/^\d{10}$/, "Invalid phone number"] 
     },
-    roll_number: { type: Number, required: true, unique: true }, 
+    rollnum: { type: Number, required: true, unique: true }, 
     course: { 
         type: String, 
         enum: ["B.Tech", "M.Tech", "PhD"], 

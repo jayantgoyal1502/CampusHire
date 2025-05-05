@@ -1,16 +1,37 @@
 const express = require("express");
 const Application = require("../models/Application");
-
+const Student = require("../models/Student");
+const Job = require("../models/Job");
 const router = express.Router();
+const { protect } = require("../middleware/authMiddleware");
 
-// Route: Apply for a job
-router.post("/apply", async (req, res) => {
+// Route: Apply for a job: create new application
+router.post("/:jobId/apply", protect, async (req, res) => {
     try {
-        const application = new Application(req.body);
-        await application.save();
-        res.status(201).json(application);
+        const jobId = req.params.jobId;
+        const studentId = req.user.id;
+        const studentRollnum = req.user.rollnum;
+
+        console.log("Student ID:", studentId, "Job ID:", jobId);
+
+        // Prevent duplicate applications
+        const existingApplication = await Application.findOne({ student_id: studentId, job_id: jobId });
+        if (existingApplication) {
+            return res.status(400).json({ error: "You have already applied to this job." });
+        }
+
+        // Create new Application document
+        const newApplication = new Application({
+            student_id: studentId,
+            job_id: jobId,
+            approval_status: "Pending" // default
+        });
+        await newApplication.save();
+
+        res.status(200).json({ message: "Application submitted successfully." });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error("Apply job error:", error);
+        res.status(500).json({ error: "Server error. Please try again later." });
     }
 });
 

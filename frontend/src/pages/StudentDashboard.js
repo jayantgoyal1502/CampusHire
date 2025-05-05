@@ -11,6 +11,7 @@ const StudentDashboard = () => {
     });
     const [editMode, setEditMode] = useState(false);
     const token = localStorage.getItem("token");
+    const [loadingJobId, setLoadingJobId] = useState(null);
 
     useEffect(() => {
         fetchJobs();
@@ -66,14 +67,21 @@ const fetchAppliedJobs = async () => {
 
     // Apply for a job
     const handleApplyJob = async (jobId) => {
+        setLoadingJobId(jobId); //loading!!
         try {
             await axios.post(`http://localhost:5001/api/jobs/${jobId}/apply`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            await axios.post(`http://localhost:5001/api/applications/${jobId}/apply`, {}, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            
             alert("Application submitted successfully!");
             fetchAppliedJobs();
         } catch (error) {
             alert("Failed to apply: " + (error.response?.data?.error || "Unknown error"));
+        } finally {
+            setLoadingJobId(null);  //stop loading
         }
     };
 
@@ -189,9 +197,12 @@ const fetchAppliedJobs = async () => {
                             ) : (
                                 <button
                                     onClick={() => handleApplyJob(job._id)}
-                                    className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
+                                    disabled={loadingJobId === job._id}
+                                    className={`mt-2 px-4 py-2 rounded-md text-white ${
+                                        loadingJobId === job._id ? "bg-blue-400 cursor-wait" : "bg-blue-600 hover:bg-blue-500"
+                                    }`}
                                 >
-                                    Apply
+                                    {loadingJobId === job._id ? "Applying..." : "Apply"}
                                 </button>
                             )}
                         </li>

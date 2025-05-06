@@ -3,7 +3,7 @@ const Application = require("../models/Application");
 const Student = require("../models/Student");
 const Job = require("../models/Job");
 const router = express.Router();
-const { protect } = require("../middleware/authMiddleware");
+const { protect, authorizeRecruiter } = require("../middleware/authMiddleware");
 
 // Route: Apply for a job: create new application
 router.post("/:jobId/apply", protect, async (req, res) => {
@@ -35,23 +35,28 @@ router.post("/:jobId/apply", protect, async (req, res) => {
     }
 });
 
-router.put("/status/:id", async (req, res) => {
+router.put("/update/status", protect, authorizeRecruiter, async (req, res) => {
     try {
-        const { id } = req.params;
-        const { approval_status } = req.body;
+        const { student_id, job_id, approval_status } = req.body;
+
+        console.log("PUT /status/:id called");
 
         if (!["Selected", "Rejected"].includes(approval_status)) {
             return res.status(400).json({ error: "Invalid status value" });
         }
 
-        const updatedStatus = await Application.findByIdAndUpdate(
-            id,
+        const updatedStatus = await Application.findOneAndUpdate(
+            { student_id, job_id },
             { approval_status },
             { new: true }
         );
 
+        if (!updatedStatus) {
+            return res.status(404).json({ error: "Application not found" });
+        }
+
         res.json(updatedStatus);
-        console.log(`Application ${approval_status}`);
+        console.log(`Application ${approval_status} for student ${student_id}`);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

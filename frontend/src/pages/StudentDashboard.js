@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import customApi from "../custom-api/axiosInstance";
 
 const StudentDashboard = () => {
     const [jobs, setJobs] = useState([]);
@@ -22,7 +22,7 @@ const StudentDashboard = () => {
     // Fetch all jobs
     const fetchJobs = async () => {
         try {
-            const { data } = await axios.get("http://localhost:5001/api/jobs", {
+            const { data } = await customApi.get("/jobs", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setJobs(data);
@@ -34,12 +34,12 @@ const StudentDashboard = () => {
     // Fetch applied jobs with full details
 const fetchAppliedJobs = async () => {
     try {
-        const { data: appliedJobIds } = await axios.get("http://localhost:5001/api/students/applied-jobs", {
+        const { data: appliedJobIds } = await customApi.get("/students/applied-jobs", {
             headers: { Authorization: `Bearer ${token}` },
         });
 
         const jobDetailsPromises = appliedJobIds.map((jobId) =>
-            axios.get(`http://localhost:5001/api/jobs/${jobId}`, {
+            customApi.get(`/jobs/${jobId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             }).then((res) => res.data).catch(() => null)
         );
@@ -56,7 +56,7 @@ const fetchAppliedJobs = async () => {
     // Fetch student profile details
     const fetchStudentProfile = async () => {
         try {
-            const { data } = await axios.get("http://localhost:5001/api/students/profile", {
+            const { data } = await customApi.get("/students/profile", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setProfile(data);
@@ -69,10 +69,10 @@ const fetchAppliedJobs = async () => {
     const handleApplyJob = async (jobId) => {
         setLoadingJobId(jobId); //loading!!
         try {
-            await axios.post(`http://localhost:5001/api/jobs/${jobId}/apply`, {}, {
+            await customApi.post(`/jobs/${jobId}/apply`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            await axios.post(`http://localhost:5001/api/applications/${jobId}/apply`, {}, {
+            await customApi.post(`/applications/${jobId}/apply`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             
@@ -89,7 +89,7 @@ const fetchAppliedJobs = async () => {
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
         try {
-            await axios.put("http://localhost:5001/api/students/update-profile", profile, {
+            await customApi.put("/students/update-profile", profile, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             alert("Profile updated successfully!");

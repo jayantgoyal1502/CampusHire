@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import customApi from "../custom-api/axiosInstance";
 
 const AdminDashboard = () => {
     const [jobs, setJobs] = useState([]);
@@ -11,7 +11,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         if (!token) {
-            navigate("/login/admin");
+            navigate("/");
             return;
         }
         fetchData();
@@ -19,28 +19,23 @@ const AdminDashboard = () => {
 
     const fetchData = async () => {
         try {
-            const { data: jobData } = await axios.get("http://localhost:5001/api/admin/jobs", {
+            const { data: jobData } = await customApi.get("/admin/jobs", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setJobs(jobData);
 
-            const { data: studentData } = await axios.get("http://localhost:5001/api/admin/students", {
+            const { data: studentData } = await customApi.get("/admin/students", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setStudents(studentData);
 
-            const { data: recruiterData } = await axios.get("http://localhost:5001/api/admin/recruiters", {
+            const { data: recruiterData } = await customApi.get("/admin/recruiters", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setRecruiters(recruiterData);
         } catch (error) {
             console.error("Error fetching admin data:", error);
         }
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        navigate("/login/admin");
     };
 
     return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import customApi from "../custom-api/axiosInstance";
 
 const RecruiterDashboard = () => {
     const [jobs, setJobs] = useState([]);
@@ -31,7 +31,7 @@ const RecruiterDashboard = () => {
 
     const fetchJobs = async () => {
         try {
-            const { data } = await axios.get("http://localhost:5001/api/jobs/recruiter", {
+            const { data } = await customApi.get("/jobs/recruiter", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setJobs(data);
@@ -42,7 +42,7 @@ const RecruiterDashboard = () => {
 
     const fetchCompanyDetails = async () => {
         try {
-            const { data } = await axios.get("http://localhost:5001/api/recruiters/profile", {
+            const { data } = await customApi.get("/recruiters/profile", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setCompany(data);
@@ -73,11 +73,11 @@ const RecruiterDashboard = () => {
 
         try {
             if (editingJobId) {
-                await axios.put(`http://localhost:5001/api/jobs/${editingJobId}`, requestData, {
+                await customApi.put(`/jobs/${editingJobId}`, requestData, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
             } else {
-                await axios.post("http://localhost:5001/api/jobs/create", requestData, {
+                await customApi.post("/jobs/create", requestData, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
             }
@@ -91,7 +91,7 @@ const RecruiterDashboard = () => {
 
     const handleDeleteJob = async (jobId) => {
         try {
-            await axios.delete(`http://localhost:5001/api/jobs/${jobId}`, {
+            await customApi.delete(`/jobs/${jobId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             fetchJobs();
@@ -121,8 +121,8 @@ const RecruiterDashboard = () => {
 
     const handleApplicationStatus = async (applicationId, status) => {
         try {
-            const url = `http://localhost:5001/api/applications/status/${applicationId}`;
-            await axios.put(
+            const url = `/applications/status/${applicationId}`;
+            await customApi.put(
                 url,
                 { approval_status: status === "approved" ? "Selected" : "Rejected" },
                 { headers: { Authorization: `Bearer ${token}` } }

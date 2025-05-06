@@ -9,7 +9,7 @@ const applicationSchema = new mongoose.Schema({
         type: String,
     },
     job_id: { type: mongoose.Schema.Types.ObjectId, ref: "Job", required: true },
-    approval_status: { type: String, enum: ["Pending", "Ongoing", "Rejected", "Selected"], default: "Pending" },
+    approval_status: { type: String, enum: ["Pending", "Rejected", "Selected"], default: "Pending" },
     appliedAt: { type: Date, default: Date.now },
     interview_schedule: { 
         type: Date,

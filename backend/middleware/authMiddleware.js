@@ -7,18 +7,20 @@ const protect = async (req, res, next) => {
 
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         try {
-            token = req.headers.authorization.split(" ")[1]; // Extract token
+            token = req.headers.authorization.split(" ")[1];
 
-            // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            // Check if user is a student or recruiter
-            req.user = await Student.findById(decoded.id).select("-password") || 
-                       await Recruiter.findById(decoded.id).select("-password");
+            const student = await Student.findById(decoded.id).select("-password");
+            const recruiter = await Recruiter.findById(decoded.id).select("-password");
+
+            req.user = student || recruiter;
 
             if (!req.user) {
                 return res.status(401).json({ error: "Not authorized, user not found" });
             }
+
+            req.user.role = student ? "student" : "recruiter";
 
             next();
         } catch (error) {
@@ -29,4 +31,12 @@ const protect = async (req, res, next) => {
     }
 };
 
-module.exports = { protect };
+// middleware to restrict to recruiters only
+const authorizeRecruiter = (req, res, next) => {
+    if (req.user.role !== "recruiter") {
+        return res.status(403).json({ error: "Access denied: Recruiters only" });
+    }
+    next();
+};
+
+module.exports = { protect, authorizeRecruiter };

@@ -119,14 +119,14 @@ const RecruiterDashboard = () => {
         setBranchesEligible(job.branches_eligible);
     };
 
-    const handleApplicationStatus = async (applicationId, status) => {
+    const handleApplicationStatus = async (student_id, job_id, status) => {
         try {
-            const url = `/applications/status/${applicationId}`;
+            const url = `/applications/update/status`;
             await customApi.put(
                 url,
-                { approval_status: status === "approved" ? "Selected" : "Rejected" },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );    
+                { student_id, job_id, approval_status: status },
+                { headers: { Authorization: `Bearer ${token}`,"Content-Type": "application/json" } }
+            ); 
             alert(`Application ${status} successfully`);
             fetchJobs();
         } catch (error) {
@@ -302,10 +302,10 @@ const RecruiterDashboard = () => {
                                         <li key={applicant._id} className="flex justify-between items-center py-2 border-b">
                                             <p>{applicant.name} - {applicant.email}</p>
                                             <div>
-                                                <button onClick={() => handleApplicationStatus(job._id, applicant._id, "Accepted")} className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">
+                                                <button onClick={() => handleApplicationStatus(applicant._id,job._id, "Selected")} className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">
                                                     Accept
                                                 </button>
-                                                <button onClick={() => handleApplicationStatus(job._id, applicant._id, "Rejected")} className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 ml-2">
+                                                <button onClick={() => handleApplicationStatus(applicant._id,job._id, "Rejected")} className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 ml-2">
                                                     Reject
                                                 </button>
                                             </div>

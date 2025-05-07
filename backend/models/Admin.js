@@ -4,20 +4,28 @@ const bcrypt = require("bcryptjs");
 const adminSchema = new mongoose.Schema(
     {
         name: { type: String, required: true },
-        email: { 
-            type: String, 
-            required: true, 
-            unique: true, 
+        email: {
+            type: String,
+            required: true,
+            unique: true,
             lowercase: true, // Ensures all emails are stored in lowercase
-            trim: true 
+            trim: true
         },
-        password: { type: String, required: true },
-        role: { 
-            type: String, 
-            enum: ["SuperAdmin", "Admin"], 
-            default: "Admin" 
+        password: {         //strong password policy
+            type: String,
+            required: true,
+            minlength: 8,
+            match: [
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
+            ]
+          },
+        role: {
+            type: String,
+            enum: ["SuperAdmin", "Admin"],
+            default: "Admin"
         }
-    }, 
+    },
     { timestamps: true }
 );
 

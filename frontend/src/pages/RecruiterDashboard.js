@@ -9,7 +9,7 @@ const RecruiterDashboard = () => {
     const [jobTitle, setJobTitle] = useState("");
     const [jobDescription, setJobDescription] = useState("");
     const [branchesEligible, setBranchesEligible] = useState([]);
-    const [applicationDeadline, setApplicationDeadline] = useState("");
+    const [jobDeadline, setjobDeadline] = useState("");
     const [fixedSalary, setFixedSalary] = useState("");
     const [bonus, setBonus] = useState("");
     const [editingJobId, setEditingJobId] = useState(null);
@@ -20,9 +20,9 @@ const RecruiterDashboard = () => {
 
     useEffect(() => {
         if (company?.org_name) {
-          setOrgName(company.org_name);
+            setOrgName(company.org_name);
         }
-      }, [company]);     
+    }, [company]);
 
     useEffect(() => {
         fetchJobs();
@@ -63,7 +63,7 @@ const RecruiterDashboard = () => {
             job_title: jobTitle,
             org_name: orgName,
             job_description: jobDescription,
-            application_deadline: applicationDeadline,
+            job_deadline: jobDeadline,
             compensation: {
                 fixed_salary: fixedSalary,
                 variable_component: bonus || 0, // Default to 0 if empty
@@ -113,7 +113,7 @@ const RecruiterDashboard = () => {
         setOrgName(job.org_name);
         setJobTitle(job.job_title);
         setJobDescription(job.job_description);
-        setApplicationDeadline(job.application_deadline);
+        setjobDeadline(job.job_deadline);
         setFixedSalary(job.compensation?.fixed_salary || "");
         setBonus(job.compensation?.bonus || "");
         setBranchesEligible(job.branches_eligible);
@@ -125,20 +125,20 @@ const RecruiterDashboard = () => {
             await customApi.put(
                 url,
                 { student_id, job_id, approval_status: status },
-                { headers: { Authorization: `Bearer ${token}`,"Content-Type": "application/json" } }
-            ); 
+                { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+            );
             alert(`Application ${status} successfully`);
             fetchJobs();
         } catch (error) {
             alert("Failed to update application status");
         }
     };
-    
+
     const resetForm = () => {
         setEditingJobId(null);
         setJobTitle("");
         setJobDescription("");
-        setApplicationDeadline("");
+        setjobDeadline("");
         setFixedSalary("");
         setBonus("");
         setBranchesEligible([]);
@@ -222,8 +222,8 @@ const RecruiterDashboard = () => {
                         <label className="block text-sm font-medium">Application Deadline</label>
                         <input
                             type="date"
-                            value={applicationDeadline}
-                            onChange={(e) => setApplicationDeadline(e.target.value)}
+                            value={jobDeadline}
+                            onChange={(e) => setjobDeadline(e.target.value)}
                             className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                             required
                         />
@@ -280,17 +280,29 @@ const RecruiterDashboard = () => {
                                     <h4 className="text-xl font-semibold">{job.job_title}</h4>
                                     <p className="text-sm text-gray-500">{job.job_description}</p>
                                     <p className="text-sm text-gray-500">Posted by: {job.company_id?.org_name || "Unknown Company"}</p>
+                                    <p className={job.job_status === "Expired" ? "text-red-500" : "text-green-600"}>
+                                        {job.job_status}
+                                    </p>
                                 </div>
                                 <div>
-                                    <button onClick={() => handleEditJob(job)} className="bg-blue-500 text-white py-1 px-4 rounded-md hover:bg-blue-600">
-                                        Edit
-                                    </button>
-                                    <button onClick={() => handleDeleteJob(job._id)} className="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 ml-2">
+                                    {job.job_status !== "Expired" && (
+                                        <button
+                                            onClick={() => handleEditJob(job)}
+                                            className="bg-blue-500 text-white py-1 px-4 rounded-md hover:bg-blue-600"
+                                        >
+                                            Edit
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => handleDeleteJob(job._id)}
+                                        className="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 ml-2"
+                                    >
                                         Delete
                                     </button>
                                 </div>
+
                             </div>
-                            <p className="text-sm text-gray-600">📅 Deadline: {job.application_deadline}</p>
+                            <p className="text-sm text-gray-600">📅 Deadline: {job.job_deadline}</p>
                             <p className="text-sm text-gray-600">💰 Fixed Salary: {job.compensation?.fixed_salary}</p>
                             <p className="text-sm text-gray-600">🎁 Bonus: {job.compensation?.variable_component}</p>
 
@@ -302,10 +314,10 @@ const RecruiterDashboard = () => {
                                         <li key={applicant._id} className="flex justify-between items-center py-2 border-b">
                                             <p>{applicant.name} - {applicant.email}</p>
                                             <div>
-                                                <button onClick={() => handleApplicationStatus(applicant._id,job._id, "Selected")} className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">
+                                                <button onClick={() => handleApplicationStatus(applicant._id, job._id, "Selected")} className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">
                                                     Accept
                                                 </button>
-                                                <button onClick={() => handleApplicationStatus(applicant._id,job._id, "Rejected")} className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 ml-2">
+                                                <button onClick={() => handleApplicationStatus(applicant._id, job._id, "Rejected")} className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 ml-2">
                                                     Reject
                                                 </button>
                                             </div>

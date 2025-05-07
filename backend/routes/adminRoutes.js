@@ -9,7 +9,7 @@ const generateToken = require("../utils/generateToken");
 
 const router = express.Router();
 
-// 🔒 Admin Login Route
+// Admin Login Route
 router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -37,7 +37,7 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// 🔒 Get all jobs
+// Get all jobs
 router.get("/jobs", adminProtect, async (req, res) => {
     try {
         const jobs = await Job.find().populate("company_id", "org_name");
@@ -47,7 +47,7 @@ router.get("/jobs", adminProtect, async (req, res) => {
     }
 });
 
-// 🔒 Get all students
+// Get all students
 router.get("/students", adminProtect, async (req, res) => {
     try {
         const students = await Student.find().select("-password");
@@ -57,7 +57,7 @@ router.get("/students", adminProtect, async (req, res) => {
     }
 });
 
-// 🔒 Get all recruiters
+// Get all recruiters
 router.get("/recruiters", adminProtect, async (req, res) => {
     try {
         const recruiters = await Recruiter.find().select("-password");

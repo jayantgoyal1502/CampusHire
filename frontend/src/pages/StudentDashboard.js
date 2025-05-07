@@ -7,7 +7,8 @@ const StudentDashboard = () => {
     const [profile, setProfile] = useState({
         phone: "",
         cgpa: "",
-        resume_url: ""
+        resume_url: "",
+        branch: ""
     });
     const [editMode, setEditMode] = useState(false);
     const token = localStorage.getItem("token");
@@ -32,25 +33,25 @@ const StudentDashboard = () => {
     };
 
     // Fetch applied jobs with full details
-const fetchAppliedJobs = async () => {
-    try {
-        const { data: appliedJobIds } = await customApi.get("/students/applied-jobs", {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const jobDetailsPromises = appliedJobIds.map((jobId) =>
-            customApi.get(`/jobs/${jobId}`, {
+    const fetchAppliedJobs = async () => {
+        try {
+            const { data: appliedJobIds } = await customApi.get("/students/applied-jobs", {
                 headers: { Authorization: `Bearer ${token}` },
-            }).then((res) => res.data).catch(() => null)
-        );
+            });
 
-        const fullJobs = await Promise.all(jobDetailsPromises);
-        const filtered = fullJobs.filter((j) => j !== null);
-        setAppliedJobs(filtered);
-    } catch (error) {
-        console.error("Error fetching applied jobs", error);
-    }
-};
+            const jobDetailsPromises = appliedJobIds.map((jobId) =>
+                customApi.get(`/jobs/${jobId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                }).then((res) => res.data).catch(() => null)
+            );
+
+            const fullJobs = await Promise.all(jobDetailsPromises);
+            const filtered = fullJobs.filter((j) => j !== null);
+            setAppliedJobs(filtered);
+        } catch (error) {
+            console.error("Error fetching applied jobs", error);
+        }
+    };
 
 
     // Fetch student profile details
@@ -75,7 +76,7 @@ const fetchAppliedJobs = async () => {
             await customApi.post(`/applications/${jobId}/apply`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            
+
             alert("Application submitted successfully!");
             fetchAppliedJobs();
         } catch (error) {
@@ -113,33 +114,58 @@ const fetchAppliedJobs = async () => {
                 >
                     {editMode ? "Cancel" : "Edit Profile"}
                 </button>
-                
+
                 {editMode ? (
                     <form onSubmit={handleUpdateProfile} className="mt-4 space-y-4">
-                        <input
-                            type="text"
-                            placeholder="Phone"
-                            value={profile.phone}
-                            onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                            required
-                        />
-                        <input
-                            type="number"
-                            placeholder="CGPA"
-                            value={profile.cgpa}
-                            onChange={(e) => setProfile({ ...profile, cgpa: e.target.value })}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Resume URL"
-                            value={profile.resume_url}
-                            onChange={(e) => setProfile({ ...profile, resume_url: e.target.value })}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                            required
-                        />
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">Phone</label>
+                            <input
+                                type="text"
+                                placeholder="Enter your phone number"
+                                value={profile.phone}
+                                onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">Branch</label>
+                            <input
+                                type="text"
+                                placeholder="Enter your branch"
+                                value={profile.branch}
+                                onChange={(e) => setProfile({ ...profile, branch: e.target.value })}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">CGPA</label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                placeholder="Enter your CGPA"
+                                value={profile.cgpa}
+                                onChange={(e) => setProfile({ ...profile, cgpa: e.target.value })}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">Resume URL</label>
+                            <input
+                                type="text"
+                                placeholder="Paste your resume link"
+                                value={profile.resume_url}
+                                onChange={(e) => setProfile({ ...profile, resume_url: e.target.value })}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                required
+                            />
+                        </div>
+
                         <button
                             type="submit"
                             className="w-full py-2 bg-green-600 text-white rounded-md hover:bg-green-500"
@@ -148,14 +174,39 @@ const fetchAppliedJobs = async () => {
                         </button>
                     </form>
                 ) : (
-                    <div className="mt-4">
-                        <p><strong>📞 Phone:</strong> {profile.phone}</p>
-                        <p><strong>📊 CGPA:</strong> {profile.cgpa}</p>
-                        <p><strong>📄 Resume:</strong> <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="text-blue-500">View Resume</a></p>
-                        <p>Don't have a resume? Or want a better resume? <a href="https://www.overleaf.com/latex/templates/nit-jalandhar-resume/xfjnhnxsbzbk" target="_blank" rel="noopener noreferrer" className="text-blue-500">Click here</a></p>
+                    <div className="mt-4 space-y-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <div className="space-y-2">
+                                <p><strong>📧 Email:</strong> {profile.email}</p>
+                                <p><strong>📞 Phone:</strong> {profile.phone}</p>
+                                <p><strong>🆔 Roll Number:</strong> {profile.rollnum}</p>
+                                <p><strong>🎓 Course:</strong> {profile.course}</p>
+                                <p><strong>🏫 Branch:</strong> {profile.branch}</p>
+                                <p><strong>📅 Graduation Year:</strong> {profile.graduation_year}</p>
+                                <p><strong>📊 CGPA:</strong> {profile.cgpa}</p><p><strong>📄 Resume:</strong> <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="text-blue-500">View Resume</a></p>
+                                <p>Don't have a resume? Or want a better one? <a href="https://www.overleaf.com/latex/templates/nit-jalandhar-resume/xfjnhnxsbzbk" target="_blank" rel="noopener noreferrer" className="text-blue-500">Click here</a></p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <p><strong>🗣️ Languages Known:</strong> {profile.languages_known?.join(", ")}</p>
+                                <p><strong>🌍 Preferred Locations:</strong> {profile.preferred_location?.join(", ")}</p>
+                                <p><strong>🛠 Skills:</strong> {profile.skills?.join(", ")}</p>
+                                <p><strong>📌 Placement Status:</strong> {profile.placement_status}</p>
+                                <p><strong>📜 Certifications:</strong></p>
+                                <ul className="list-disc list-inside">
+                                    {profile.certifications?.map((cert, idx) => (
+                                        <li key={idx}>
+                                            {cert.name} — {cert.issuing_org} ({new Date(cert.issue_date).getFullYear()})
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 )}
             </section>
+
 
             {/* Applied Jobs Section */}
             <section className="bg-white p-6 rounded-lg shadow-md">
@@ -187,7 +238,19 @@ const fetchAppliedJobs = async () => {
                             <br />
                             <span>💰 Salary: {job.compensation.fixed_salary}</span>
                             <br />
-                            {appliedJobs.some((appliedJob) => appliedJob._id === job._id) ? (
+                            <span className={`font-semibold ${job.job_status === "Expired" ? "text-red-500" : "text-green-600"}`}>
+                                🏷 Status: {job.job_status}
+                            </span>
+                            <br />
+
+                            {job.job_status === "Expired" ? (
+                                <button
+                                    disabled
+                                    className="mt-2 px-4 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed"
+                                >
+                                    ❌ Job Expired
+                                </button>
+                            ) : appliedJobs.some((appliedJob) => appliedJob._id === job._id) ? (
                                 <button
                                     disabled
                                     className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md cursor-not-allowed"
@@ -198,9 +261,8 @@ const fetchAppliedJobs = async () => {
                                 <button
                                     onClick={() => handleApplyJob(job._id)}
                                     disabled={loadingJobId === job._id}
-                                    className={`mt-2 px-4 py-2 rounded-md text-white ${
-                                        loadingJobId === job._id ? "bg-blue-400 cursor-wait" : "bg-blue-600 hover:bg-blue-500"
-                                    }`}
+                                    className={`mt-2 px-4 py-2 rounded-md text-white ${loadingJobId === job._id ? "bg-blue-400 cursor-wait" : "bg-blue-600 hover:bg-blue-500"
+                                        }`}
                                 >
                                     {loadingJobId === job._id ? "Applying..." : "Apply"}
                                 </button>

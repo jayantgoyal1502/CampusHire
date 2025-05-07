@@ -28,7 +28,7 @@ const upload = multer({
     },
 });
 
-// 🔒 API to Upload Resume
+// API to Upload Resume
 router.post("/upload-resume", upload.single("resume"), async (req, res) => {
     try {
         if (!req.file) {
@@ -99,12 +99,12 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// 🔒 Protected Route: Get Student Profile
+// Protected Route: Get Student Profile
 router.get("/profile", protect, async (req, res) => {
     res.json(req.user);
 });
 
-// 🔒 Protected Route: Get all students (Only for authenticated users)
+// Protected Route: Get all students (Only for authenticated users)
 router.get("/", protect, async (req, res) => {
     try {
         const students = await Student.find().select("-password");
@@ -114,7 +114,7 @@ router.get("/", protect, async (req, res) => {
     }
 });
 
-// 🔒 Get Applied Jobs for a Student
+// Get Applied Jobs for a Student
 router.get("/applied-jobs", protect, async (req, res) => {
     try {
         if(!req.user || !req.user.name) {

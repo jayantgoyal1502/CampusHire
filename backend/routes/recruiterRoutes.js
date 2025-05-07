@@ -58,12 +58,12 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// 🔒 Protected Route: Get Recruiter Profile
+// Protected Route: Get Recruiter Profile
 router.get("/profile", protect, async (req, res) => {
     res.json(req.user);
 });
 
-// 🔒 Protected Route: Get all recruiters (Only for authenticated users)
+// Protected Route: Get all recruiters (Only for authenticated users)
 router.get("/", protect, async (req, res) => {
     try {
         const recruiters = await Recruiter.find().select("-password"); // Exclude password

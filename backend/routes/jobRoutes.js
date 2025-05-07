@@ -1,12 +1,12 @@
 const express = require("express");
 const Job = require("../models/Job");
 const Student = require("../models/Student");
-const { protect } = require("../middleware/authMiddleware");
+const { protect, authorizeRecruiter } = require("../middleware/authMiddleware");
 const sendEmail = require("../utils/sendEmail");
 
 const router = express.Router();
 
-// 🔒 Create a job posting (Only recruiters)
+//Create a job posting (Only recruiters)
 router.post("/create", protect, async (req, res) => {
     try {
         console.log("Authenticated User:", req.user);
@@ -24,17 +24,29 @@ router.post("/create", protect, async (req, res) => {
     }
 });
 
-// 🔒 Get all job postings (Authenticated users)
+//Get all job postings (Authenticated users)
 router.get("/", protect, async (req, res) => {
     try {
         const jobs = await Job.find().populate("company_id", "org_name");
+
+        const currentDate = new Date();
+        const updates = [];
+
+        for (const job of jobs) {
+            if (job.job_deadline < currentDate && job.job_status !== "Expired") {
+                job.job_status = "Expired";
+                updates.push(job.save());
+            }
+        }
+        await Promise.all(updates); // Save all updated jobs in parallel
         res.json(jobs);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// 🔒 Get jobs posted by the logged-in recruiter
+
+// Get jobs posted by the logged-in recruiter
 router.get("/recruiter", protect, async (req, res) => {
     try {
         console.log("Recruiter Check - Authenticated user:", req.user);
@@ -43,13 +55,27 @@ router.get("/recruiter", protect, async (req, res) => {
         }
 
         const jobs = await Job.find({ company_id: req.user._id }).populate("company_id", "org_name contact_email").populate("applicants", "name email");
+
+        const currentDate = new Date();
+        const updates = [];
+
+        for (const job of jobs) {
+            if (job.job_deadline < currentDate && job.job_status !== "Expired") {
+                job.job_status = "Expired";
+                updates.push(job.save());
+            }
+        }
+
+        await Promise.all(updates);
+
         res.json(jobs);
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// 🔒 Apply for a job (Students only) + Email Notifications
+// Apply for a job (Students only) + Email Notifications
 router.post("/:jobId/apply", protect, async (req, res) => {
     try {
         if (!req.user || !req.user.name) {
@@ -95,8 +121,8 @@ router.post("/:jobId/apply", protect, async (req, res) => {
     }
 });
 
-// 🔒 Edit a job posting (Only recruiters)
-router.put("/:jobId", protect, async (req, res) => {
+// Edit a job posting (Only recruiters)
+router.put("/:jobId", protect, authorizeRecruiter, async (req, res) => {
     try {
         const job = await Job.findById(req.params.jobId);
         if (!job) return res.status(404).json({ error: "Job not found" });
@@ -114,8 +140,8 @@ router.put("/:jobId", protect, async (req, res) => {
     }
 });
 
-// 🔒 Delete a job posting (Only recruiters)
-router.delete("/:jobId", protect, async (req, res) => {
+// Delete a job posting (Only recruiters)
+router.delete("/:jobId", protect, authorizeRecruiter, async (req, res) => {
     try {
         console.log("Job Deletion Request:", req.params.jobId);
         console.log("Authenticated User:", req.user);
@@ -140,7 +166,7 @@ router.delete("/:jobId", protect, async (req, res) => {
     }
 });
 
-// 🔒 Get Applied Jobs for a Student
+// Get Applied Jobs for a Student
 router.get("/students/applied-jobs", protect, async (req, res) => {
     try {
         if (!req.user || !req.user.name) {
@@ -152,12 +178,16 @@ router.get("/students/applied-jobs", protect, async (req, res) => {
     }
 });
 
-// 🔒 Get a single job by ID
+// Get a single job by ID
 router.get("/:jobId", protect, async (req, res) => {
     try {
         const job = await Job.findById(req.params.jobId).populate("company_id", "org_name");
         if (!job) return res.status(404).json({ error: "Job not found" });
-        res.json(job);
+        if (job.job_deadline < new Date() && job.job_status !== "Expired") {
+            job.job_status = "Expired";
+            await job.save();
+        }
+        res.json(job); 
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

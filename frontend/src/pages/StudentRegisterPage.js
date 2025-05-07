@@ -9,11 +9,12 @@ const RegisterPage = () => {
     const [email, setEmail] = useState("");
     const [rollnum, setRollnum] = useState("");
     const [password, setPassword] = useState("");
+    const [confirm_password, setConfirmPassword] = useState("");
     const [phone, setPhone] = useState("");
     const [branch, setBranch] = useState("");
     const [cgpa, setCgpa] = useState("");
     const [resumeUrl, setResumeUrl] = useState("");
-    
+
     const [course, setCourse] = useState("");
     const [year, setYear] = useState("");
 
@@ -21,6 +22,10 @@ const RegisterPage = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        if (password !== confirm_password) {
+            alert("Passwords do not match");
+            return;
+        }
 
         const requestData = {
             name,
@@ -31,6 +36,7 @@ const RegisterPage = () => {
             branch,
             graduation_year: year,
             cgpa,
+            course,
             resume_url: resumeUrl,
         };
 
@@ -49,27 +55,28 @@ const RegisterPage = () => {
                 <h2 className="text-center text-4xl font-extrabold text-gray-900">🚀 Student Registration</h2>
                 <form className="mt-6 space-y-4" onSubmit={handleRegister}>
                     {[{ label: "Full Name", value: name, setValue: setName, icon: <FaUser /> },
-                      { label: "Email", value: email, setValue: setEmail, icon: <FaEnvelope />, type: "email" },
-                      { label: "Password", value: password, setValue: setPassword, icon: <FaLock />, type: "password" },
-                      { label: "Phone Number", value: phone, setValue: setPhone, icon: <FaPhone /> },
-                      { label: "Roll Number", value: rollnum, setValue: setRollnum, icon: <FaIdBadge /> },
-                      { label: "Branch", value: branch, setValue: setBranch, icon: <FaGraduationCap /> },
-                      { label: "CGPA", value: cgpa, setValue: setCgpa, icon: <FaGraduationCap />, type: "number" },
-                      { label: "Graduation Year", value: year, setValue: setYear, icon: <FaGraduationCap />, type: "number" },
-                      { label: "Resume URL", value: resumeUrl, setValue: setResumeUrl, icon: <FaFileAlt /> }]
-                      .map(({ label, value, setValue, icon, type = "text" }, index) => (
-                        <div key={index} className="relative">
-                            <span className="absolute left-3 top-3 text-gray-500">{icon}</span>
-                            <input
-                                type={type}
-                                placeholder={label}
-                                value={value}
-                                onChange={(e) => setValue(e.target.value)}
-                                required
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                            />
-                        </div>
-                    ))}
+                    { label: "Email", value: email, setValue: setEmail, icon: <FaEnvelope />, type: "email" },
+                    { label: "Password", value: password, setValue: setPassword, icon: <FaLock />, type: "password" },
+                    { label: "Confirm Password", value: confirm_password, setValue: setConfirmPassword, icon: <FaLock />, type: "password" },
+                    { label: "Phone Number", value: phone, setValue: setPhone, icon: <FaPhone /> },
+                    { label: "Roll Number", value: rollnum, setValue: setRollnum, icon: <FaIdBadge /> },
+                    { label: "Branch", value: branch, setValue: setBranch, icon: <FaGraduationCap /> },
+                    { label: "CGPA", value: cgpa, setValue: setCgpa, icon: <FaGraduationCap />, type: "number" },
+                    { label: "Graduation Year", value: year, setValue: setYear, icon: <FaGraduationCap />, type: "number" },
+                    { label: "Resume URL", value: resumeUrl, setValue: setResumeUrl, icon: <FaFileAlt /> }]
+                        .map(({ label, value, setValue, icon, type = "text" }, index) => (
+                            <div key={index} className="relative">
+                                <span className="absolute left-3 top-3 text-gray-500">{icon}</span>
+                                <input
+                                    type={type}
+                                    placeholder={label}
+                                    value={value}
+                                    onChange={(e) => setValue(e.target.value)}
+                                    required
+                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                />
+                            </div>
+                        ))}
 
                     <div className="relative">
                         <select

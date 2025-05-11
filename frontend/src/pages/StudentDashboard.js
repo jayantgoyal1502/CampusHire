@@ -27,7 +27,7 @@ const StudentDashboard = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const currentDate = new Date();
-            const filteredJobs = data.filter(job => new Date(job.application_deadline) > currentDate);
+            const filteredJobs = data.filter(job => new Date(job.job_deadline) > currentDate && job.job_status === "Active");
             setJobs(filteredJobs);
         } catch (error) {
             console.error("Error fetching jobs", error);

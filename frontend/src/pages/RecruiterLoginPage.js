@@ -55,6 +55,17 @@ const RecruiterLoginPage = () => {
                         </button>
                     </div>
                 </form>
+                <div className="text-center mt-4">
+                    <p className="text-sm text-gray-600">
+                        Don't have an account? 
+                        <button 
+                            onClick={() => navigate('/register/recruiter')} 
+                            className="text-indigo-600 hover:underline focus:outline-none"
+                        >
+                            Sign up
+                        </button>
+                    </p>
+                </div>
             </div>
         </div>
     );

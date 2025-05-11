@@ -26,7 +26,9 @@ const StudentDashboard = () => {
             const { data } = await customApi.get("/jobs", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setJobs(data);
+            const currentDate = new Date();
+            const filteredJobs = data.filter(job => new Date(job.application_deadline) > currentDate);
+            setJobs(filteredJobs);
         } catch (error) {
             console.error("Error fetching jobs", error);
         }

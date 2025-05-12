@@ -34,29 +34,19 @@ const StudentDashboard = () => {
         }
     };
 
-    // Fetch applied jobs with full details
     const fetchAppliedJobs = async () => {
         try {
-            const { data: appliedJobIds } = await customApi.get("/students/applied-jobs", {
+            const { data: appliedJobs } = await customApi.get("/students/applied-jobs", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-
-            const jobDetailsPromises = appliedJobIds.map((jobId) =>
-                customApi.get(`/jobs/${jobId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                }).then((res) => res.data).catch(() => null)
-            );
-
-            const fullJobs = await Promise.all(jobDetailsPromises);
-            const filtered = fullJobs.filter((j) => j !== null);
-            setAppliedJobs(filtered);
+            console.log("Fetched applied jobs:", appliedJobs);
+            setAppliedJobs(appliedJobs);
+            return appliedJobs;
         } catch (error) {
             console.error("Error fetching applied jobs", error);
         }
     };
 
-
-    // Fetch student profile details
     const fetchStudentProfile = async () => {
         try {
             const { data } = await customApi.get("/students/profile", {
@@ -68,19 +58,16 @@ const StudentDashboard = () => {
         }
     };
 
-    // Apply for a job
     const handleApplyJob = async (jobId) => {
         setLoadingJobId(jobId); //loading!!
         try {
-            await customApi.post(`/jobs/${jobId}/apply`, {}, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
             await customApi.post(`/applications/${jobId}/apply`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
             alert("Application submitted successfully!");
-            fetchAppliedJobs();
+            const updatedAppliedJobs = await fetchAppliedJobs();
+            setAppliedJobs(updatedAppliedJobs); 
         } catch (error) {
             alert("Failed to apply: " + (error.response?.data?.error || "Unknown error"));
         } finally {
@@ -88,7 +75,6 @@ const StudentDashboard = () => {
         }
     };
 
-    // Handle profile update
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
         try {
@@ -209,17 +195,36 @@ const StudentDashboard = () => {
                 )}
             </section>
 
-
             {/* Applied Jobs Section */}
-            <section className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-2xl font-semibold text-gray-700">📌 Applied Jobs</h3>
+            <section className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <h3 className="text-2xl font-semibold text-gray-700 mb-6">📌 Applied Jobs</h3>
                 {appliedJobs.length === 0 ? (
-                    <p className="text-gray-500">You have not applied for any jobs yet.</p>
+                    <div className="text-center text-gray-500 py-10">
+                        <p className="text-lg">You have not applied for any jobs yet.</p>
+                    </div>
                 ) : (
-                    <ul className="space-y-4">
-                        {appliedJobs.map((job) => (
-                            <li key={job._id} className="border-b py-2">
-                                <strong>{job.org_name}: {job.job_title}</strong> - <span>Status: {job.status || "Pending"}</span>
+                    <ul className="grid gap-4 md:grid-cols-2">
+                        {Array.isArray(appliedJobs) && appliedJobs.map((job) => (
+                            <li
+                                key={job._id}
+                                className="p-4 rounded-lg border border-gray-200 hover:shadow-lg transition duration-200 bg-gray-50"
+                            >
+                                <div className="flex items-center justify-between mb-2">
+                                    <h4 className="text-xl font-semibold text-gray-700">
+                                        {job.job_id?.org_name}
+                                    </h4>
+                                    <span
+                                        className={`text-sm font-medium px-3 py-1 rounded-full ${job.approval_status === "Selected"
+                                                ? "bg-green-100 text-green-700"
+                                                : job.approval_status === "Rejected"
+                                                    ? "bg-red-100 text-red-700"
+                                                    : "bg-yellow-100 text-yellow-700"
+                                            }`}
+                                    >
+                                        {job.approval_status}
+                                    </span>
+                                </div>
+                                <p className="text-gray-600">{job.job_id?.job_title} - {job.job_id?.job_type}</p>
                             </li>
                         ))}
                     </ul>
@@ -230,13 +235,13 @@ const StudentDashboard = () => {
             <section className="bg-white p-6 rounded-lg shadow-md">
                 <h3 className="text-2xl font-semibold text-gray-700">📌 Available Jobs</h3>
                 <ul className="space-y-4">
-                    {jobs.map((job) => (
+                    {Array.isArray(jobs) && jobs.map((job) => (
                         <li key={job._id} className="border-b py-2">
                             <strong>{job.org_name}</strong>
                             <br />
                             <strong>{job.job_title}</strong> - {job.job_description}
                             <br />
-                            <span>📅 Deadline: {job.application_deadline}</span>
+                            <span>📅 Deadline: {job.job_deadline}</span>                                
                             <br />
                             <span>💰 Salary: {job.compensation.fixed_salary}</span>
                             <br />
@@ -254,7 +259,7 @@ const StudentDashboard = () => {
                                 >
                                     ❌ Job Expired
                                 </button>
-                            ) : appliedJobs.some((appliedJob) => appliedJob._id === job._id) ? (
+                            ) : appliedJobs.some((appliedJob) => appliedJob.job_id._id === job._id) ? (
                                 <button
                                     disabled
                                     className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md cursor-not-allowed"

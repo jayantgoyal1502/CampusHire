@@ -1,5 +1,6 @@
 const express = require("express");
 const Student = require("../models/Student");
+const Application = require("../models/Application");
 const generateToken = require("../utils/generateToken");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -117,10 +118,15 @@ router.get("/", protect, async (req, res) => {
 // Get Applied Jobs for a Student
 router.get("/applied-jobs", protect, async (req, res) => {
     try {
-        if(!req.user || !req.user.name) {
-            return res.status(403).json({ error: "Access denied. Only students can view applied jobs." });
-        }
-        res.json(req.user.applied_jobs);
+        const studentId = req.user._id;
+
+        const applications = await Application.find({ student_id: studentId })
+            .populate({
+                path: "job_id",
+                populate: { path: "company_id", select: "org_name" }
+            });
+
+        res.json(applications);
     } catch (error){
         res.status(500).json({error: error.message });
     }

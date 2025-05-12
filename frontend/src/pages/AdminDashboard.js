@@ -61,9 +61,11 @@ const AdminDashboard = () => {
                                         </p>
                                     </div>
                                 </div>
-                                <p className="text-sm text-gray-600">📅 Deadline: {job.application_deadline}</p>
+                                <p className="text-sm text-gray-600">📅 Deadline: {job.job_deadline}</p>
                                 <p className="text-sm text-gray-600">💰 Fixed Salary: {job.compensation?.fixed_salary}</p>
                                 <p className="text-sm text-gray-600">🎁 Variable Salary: {job.compensation?.variable_component}</p>
+                                <p className="text-sm text-gray-600">👥 Applicants: {job.applicants.length}</p>
+
                                 {/* <p>{job.branches_eligible}</p> */}
                                 {/* <p>{job.job_location}</p> */}
 
@@ -86,18 +88,20 @@ const AdminDashboard = () => {
                                 <div className="flex justify-between items-center border-b pb-3 mb-3">
                                     <div>
                                         <h4 className="text-lg font-semibold">Name: {student.name}</h4>
-                                        <p className="text-sm text-gray-500">Roll No.: {student.roll_number}</p>
-                                        <p className="text-sm text-gray-500">Phone: {student.phone}</p>
-                                        <p className="text-sm text-gray-500">Email: {student.email}</p>
+                                        <p className="text-sm text-gray-600">Roll No.: {student.rollnum}</p>
+                                        <p className="text-sm text-gray-600">Phone: {student.phone}</p>
+                                        <p className="text-sm text-gray-600">Email: {student.email}</p>
                                     </div>
                                 </div>
 
                                 {/* Academic Details - Using Grid for Better Layout */}
-                                <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                <div className="grid grid-cols-2 gap-1 text-sm text-gray-600">
                                     <p><span className="font-medium">Course:</span> {student.course}</p>
                                     <p><span className="font-medium">Graduation Year:</span> {student.graduation_year}</p>
                                     <p><span className="font-medium">Branch:</span> {student.branch}</p>
                                     <p><span className="font-medium">CGPA:</span> {student.cgpa}</p>
+                                    <p><span className="font-medium">Placement Status:</span> {student.placement_status}</p>
+                                    <p><span className="font-medium">Applied Jobs:</span> {student.applied_jobs.length}</p>
                                 </div>
 
                                 {/* Social Links Section */}

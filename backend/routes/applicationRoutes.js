@@ -1,9 +1,11 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const Application = require("../models/Application");
 const Student = require("../models/Student");
 const Job = require("../models/Job");
 const router = express.Router();
 const { protect, authorizeRecruiter } = require("../middleware/authMiddleware");
+const sendEmail = require("../utils/sendEmail");
 
 // Route: Get all applications
 router.get("/", protect, async (req, res) => {
@@ -43,27 +45,74 @@ router.post("/:jobId/apply", protect, async (req, res) => {
     try {
         const jobId = req.params.jobId;
         const studentId = req.user.id;
-        const studentRollnum = req.user.rollnum;
 
-        console.log("Student ID:", studentId, "Job ID:", jobId);
+        const job = await Job.findById(jobId).populate("company_id", "contact_email org_name");
+        if (!job) {
+            console.log("Job not found");
+            return res.status(404).json({ error: "Job not found." });
+        }
 
-        // Prevent duplicate applications
+        const student = await Student.findById(studentId);
+        if (!student) {
+            console.log("Student not found");
+            return res.status(404).json({ error: "Student not found." });
+        }
+
+        if (student.hasOfferFor(job.job_type)) {
+            console.log("Already has offer for this job type");
+            return res.status(400).json({ error: `Already selected for a ${job.job_type} job.` });
+        }
+
         const existingApplication = await Application.findOne({ student_id: studentId, job_id: jobId });
         if (existingApplication) {
+            console.log("Already applied");
             return res.status(400).json({ error: "You have already applied to this job." });
         }
 
-        // Create new Application document
+        // Save application
         const newApplication = new Application({
             student_id: studentId,
             job_id: jobId,
-            approval_status: "Pending" // default
+            approval_status: "Pending"
         });
         await newApplication.save();
+        console.log("New application saved");
+
+        // Update Student
+        student.applied_jobs.push(jobId);
+        await Student.updateOne(
+            { _id: studentId },
+            { $push: { applied_jobs: jobId } }
+          );
+        console.log("Student updated with applied job");
+
+        // Update Job
+        job.applicants.push(studentId);
+        await Job.updateOne(
+            { _id: jobId },
+            { $push: { applicants: studentId } }
+          );
+          
+        console.log("Job updated with new applicant");
+
+        // Emails
+        await sendEmail(
+            student.email,
+            "Application Confirmation - CampusHire",
+            `You have successfully applied for the job: ${job.job_title} at ${job.company_id.org_name}.`
+        );
+        console.log("Confirmation email sent");
+
+        // await sendEmail(
+        //     job.company_id.contact_email,
+        //     "New Job Application - CampusHire",
+        //     `${student.name} has applied for the job: ${job.job_title}. Check the CampusHire portal for details.`
+        // );
+        // console.log("Recruiter notified");
 
         res.status(200).json({ message: "Application submitted successfully." });
     } catch (error) {
-        console.error("Apply job error:", error);
+        console.error("Apply job error:", error);  // <--- This should show the actual error
         res.status(500).json({ error: "Server error. Please try again later." });
     }
 });

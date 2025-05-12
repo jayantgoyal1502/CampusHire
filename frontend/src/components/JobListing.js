@@ -36,7 +36,7 @@ const JobListing = ({api_url}) => {
                                     <p className="text-sm text-gray-500">Job Description: {job.job_description}</p>
                                 </div>
                             </div>
-                            <p className="text-sm text-gray-600">📅 Deadline: {job.application_deadline}</p>
+                            <p className="text-sm text-gray-600">📅 Deadline: {job.job_deadline}</p>
                             <p className="text-sm text-gray-600">💰 Fixed Salary: {job.compensation?.fixed_salary}</p>
                             <p className="text-sm text-gray-600">🎁 Variable Salary: {job.compensation?.variable_component}</p>
                             {/* <p>{job.branches_eligible}</p> */}

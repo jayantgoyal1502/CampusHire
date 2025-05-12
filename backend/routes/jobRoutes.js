@@ -75,52 +75,6 @@ router.get("/recruiter", protect, async (req, res) => {
     }
 });
 
-// Apply for a job (Students only) + Email Notifications
-router.post("/:jobId/apply", protect, async (req, res) => {
-    try {
-        if (!req.user || !req.user.name) {
-            return res.status(403).json({ error: "Access denied. Only students can apply for jobs." });
-        }
-
-        const job = await Job.findById(req.params.jobId).populate("company_id", "contact_email org_name");
-        if (!job) {
-            return res.status(404).json({ error: "Job not found" });
-        }
-
-        // Prevent duplicate applications
-        if (req.user.applied_jobs.includes(job._id)) {
-            return res.status(400).json({ error: "You have already applied for this job." });
-        }
-
-        // Add job to student's applied list
-        req.user.applied_jobs.push(job._id);
-        await req.user.save();
-
-        // Add student to job's applicants list
-        job.applicants.push(req.user._id);
-        await job.save();
-
-        // Send confirmation email to student
-        await sendEmail(
-            req.user.email,
-            "Application Confirmation - CampusHire",
-            `You have successfully applied for the job: ${job.job_title} at ${job.company_id.org_name}.`
-        );
-
-        // Send notification email to recruiter
-        await sendEmail(
-            job.company_id.contact_email,
-            "New Job Application - CampusHire",
-            `${req.user.name} has applied for the job: ${job.job_title}. Check the CampusHire portal for details.`
-        );
-
-        res.json({ message: "Successfully applied for the job!" });
-    } catch (error) {
-        console.error("Error applying for job:", error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
-
 // Edit a job posting (Only recruiters)
 router.put("/:jobId", protect, authorizeRecruiter, async (req, res) => {
     try {

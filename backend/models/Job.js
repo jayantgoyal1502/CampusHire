@@ -41,7 +41,7 @@ const jobSchema = new mongoose.Schema(
             abroad: { type: Boolean, default: false },
             specific_location: { type: String, default: "Not Specified" }
         },
-        job_deadline: { 
+        application_deadline: { 
             type: Date, 
             required: true,
             validate: {

@@ -238,8 +238,10 @@ const StudentDashboard = () => {
                             <br />
                             <span>💰 Salary: {job.compensation.fixed_salary}</span>
                             <br />
-                            <span className={`font-semibold ${job.job_status === "Expired" ? "text-red-500" : "text-green-600"}`}>
-                                🏷 Status: {job.job_status}
+                            <span>🧾 Job Type: {job.job_type}</span>
+                            <br />
+                            <span className={`font-bold ${job.job_status === "Expired" ? "text-red-500" : "text-green-600"}`}>
+                                Status: {job.job_status}
                             </span>
                             <br />
 

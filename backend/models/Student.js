@@ -28,6 +28,61 @@ const studentSchema = new mongoose.Schema({
         min: 0,
         max: 10
     },
+    resume_url: {
+        type: String,
+        validate: {
+            validator: function (v) {
+                return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
+            },
+            message: "Invalid resume URL"
+        }
+    },
+    // resumes: [
+    //     {
+    //         category: {
+    //             type: String,
+    //             enum: ["Software", "Engineering", "Finance", "Other"],
+    //             required: true
+    //         },
+    //         resume_url: {
+    //             type: String,
+    //             validate: {
+    //                 validator: function(v) {
+    //                     return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
+    //                 },
+    //                 message: "Invalid resume URL"
+    //             },
+    //             required: true
+    //         }
+    //     }
+    // ],
+
+    internship_offer_status: { 
+        type: String, 
+        enum: ["Selected", "Rejected", "Pending", "None"], default: "None" 
+    },
+    ppo_offer_status: { 
+        type: String, 
+        enum: ["Selected", "Rejected", "Pending", "None"], default: "None" 
+    },
+    fulltime_offer_status: { 
+        type: String, 
+        enum: ["Selected", "Rejected", "Pending", "None"], default: "None" 
+    },
+    placement_status: {
+        type: String,
+        enum: ["Unplaced", "Interned", "PPO-offered", "Placed"], default: "Unplaced"
+    },
+    password: {
+        type: String,
+        required: true,
+        minlength: 8,
+        match: [
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+            "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
+        ]
+    },
+    applied_jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job", default: [] }],
     languages_known: [{ type: String }],
     certifications: [{
         name: { type: String, required: true },
@@ -58,53 +113,6 @@ const studentSchema = new mongoose.Schema({
         title: { type: String, required: true },
         description: { type: String }
     }],
-    resume_url: {
-        type: String,
-        validate: {
-            validator: function (v) {
-                return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
-            },
-            message: "Invalid resume URL"
-        }
-    },
-    // resumes: [
-    //     {
-    //         category: {
-    //             type: String,
-    //             enum: ["Software", "Engineering", "Finance", "Other"],
-    //             required: true
-    //         },
-    //         resume_url: {
-    //             type: String,
-    //             validate: {
-    //                 validator: function(v) {
-    //                     return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
-    //                 },
-    //                 message: "Invalid resume URL"
-    //             },
-    //             required: true
-    //         }
-    //     }
-    // ],
-    placement_type: {
-        type: String,
-        enum: ["Internship", "Placement"],
-    },
-    placement_status: {
-        type: String,
-        enum: ["Unplaced", "Single Offer", "Double Offer"],
-        default: "Unplaced"
-    },
-    password: {
-        type: String,
-        required: true,
-        minlength: 8,
-        match: [
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
-        ]
-    },
-    applied_jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job", default: [] }]
 
 }, { timestamps: true });
 

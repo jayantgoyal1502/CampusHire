@@ -35,7 +35,7 @@ router.get("/", protect, async (req, res) => {
         for (const job of jobs) {
             if (job.job_deadline < currentDate && job.job_status !== "Expired") {
                 job.job_status = "Expired";
-                updates.push(job.save());
+                updates.push(job.save({ validateBeforeSave: false }));
             }
         }
         await Promise.all(updates); // Save all updated jobs in parallel
@@ -62,7 +62,7 @@ router.get("/recruiter", protect, async (req, res) => {
         for (const job of jobs) {
             if (job.job_deadline < currentDate && job.job_status !== "Expired") {
                 job.job_status = "Expired";
-                updates.push(job.save());
+                updates.push(job.save({ validateBeforeSave: false }));
             }
         }
 

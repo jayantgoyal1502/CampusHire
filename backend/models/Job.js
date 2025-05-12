@@ -41,14 +41,14 @@ const jobSchema = new mongoose.Schema(
             abroad: { type: Boolean, default: false },
             specific_location: { type: String, default: "Not Specified" }
         },
-        application_deadline: { 
+        job_deadline: { 
             type: Date, 
             required: true,
             validate: {
                 validator: function (value) {
                     return value > new Date(); // Ensures deadline is in the future
                 },
-                message: "Application deadline must be in the future"
+                message: "Job deadline must be in the future"
             }
         },
         applicants: [

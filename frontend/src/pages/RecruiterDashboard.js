@@ -81,7 +81,7 @@ const RecruiterDashboard = () => {
             org_name: orgName,
             job_description: jobDescription,
             job_type: jobType,
-            application_deadline: jobDeadline,
+            job_deadline: jobDeadline,
             compensation: {
                 fixed_salary: fixedSalary,
                 variable_component: bonus || 0, // Default to 0 if empty
@@ -131,7 +131,7 @@ const RecruiterDashboard = () => {
         setOrgName(job.org_name);
         setJobTitle(job.job_title);
         setJobDescription(job.job_description);
-        setjobDeadline(job.application_deadline);
+        setjobDeadline(job.job_deadline);
         setFixedSalary(job.compensation?.fixed_salary || "");
         setBonus(job.compensation?.variable_component || "");
         setBranchesEligible(job.branches_eligible);
@@ -336,7 +336,7 @@ const RecruiterDashboard = () => {
                                 </div>
 
                             </div>
-                            <p className="text-sm text-gray-600">📅 Deadline: {job.application_deadline}</p>
+                            <p className="text-sm text-gray-600">📅 Deadline: {job.job_deadline}</p>
                             <p className="text-sm text-gray-600">💰 Fixed Salary: {job.compensation?.fixed_salary}</p>
                             <p className="text-sm text-gray-600">🎁 Bonus: {job.compensation?.variable_component}</p>
                             <p className="text-sm text-gray-600">🧾 Job Type: {job.job_type}</p>

@@ -236,7 +236,7 @@ const StudentDashboard = () => {
                             <br />
                             <strong>{job.job_title}</strong> - {job.job_description}
                             <br />
-                            <span>📅 Deadline: {job.application_deadline}</span>
+                            <span>📅 Deadline: {job.job_deadline}</span>
                             <br />
                             <span>💰 Salary: {job.compensation.fixed_salary}</span>
                             <br />

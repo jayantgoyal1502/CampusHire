@@ -55,6 +55,15 @@ const StudentLoginPage = () => {
                         </button>
                     </div>
                 </form>
+                <div className="text-center mt-4">
+                    <button
+                        type="button"
+                        onClick={() => navigate('/')}
+                        className="text-indigo-600 hover:text-indigo-800 font-medium"
+                    >
+                        Go to Home
+                    </button>
+                </div>
             </div>
         </div>
     );

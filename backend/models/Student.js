@@ -127,4 +127,24 @@ studentSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
+studentSchema.pre('save', function(next) {                          //mongoose pre-save hook
+    if (this.internship_offer_status === "Selected") {
+        this.placement_status = "Interned";
+    } else if (this.ppo_offer_status === "Selected") {
+        this.placement_status = "PPO-offered";
+    } else if (this.fulltime_offer_status === "Selected") {
+        this.placement_status = "Placed";
+    } else {
+        this.placement_status = "Unplaced";
+    }
+    next();
+});
+
+studentSchema.methods.hasOfferFor = function (jobType) {
+    if (jobType === "Internship") return this.internship_offer_status === "Selected";
+    if (jobType === "PPO") return this.ppo_offer_status === "Selected";
+    if (jobType === "Full-time") return this.fulltime_offer_status === "Selected";
+    return false;
+};
+
 module.exports = mongoose.model("Student", studentSchema);

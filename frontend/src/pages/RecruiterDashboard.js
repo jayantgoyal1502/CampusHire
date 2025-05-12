@@ -4,15 +4,19 @@ import customApi from "../custom-api/axiosInstance";
 
 const RecruiterDashboard = () => {
     const [jobs, setJobs] = useState([]);
+    const [applicantsByJob, setApplicantsByJob] = useState({});
+
     const [company, setCompany] = useState(null);
     const [orgName, setOrgName] = useState("");
     const [jobTitle, setJobTitle] = useState("");
     const [jobDescription, setJobDescription] = useState("");
+    const [jobType, setJobType] = useState("");
     const [branchesEligible, setBranchesEligible] = useState([]);
     const [jobDeadline, setjobDeadline] = useState("");
     const [fixedSalary, setFixedSalary] = useState("");
     const [bonus, setBonus] = useState("");
     const [editingJobId, setEditingJobId] = useState(null);
+
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
@@ -28,6 +32,19 @@ const RecruiterDashboard = () => {
         fetchJobs();
         fetchCompanyDetails();
     }, []);
+
+    useEffect(() => {
+        // when jobs arrive, fetch applicants for each
+        jobs.forEach((job) => {
+            customApi.get(`/applications/${job._id}/applicants`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(({ data }) => {
+                    setApplicantsByJob((prev) => ({ ...prev, [job._id]: data }));
+                })
+                .catch((err) => console.error("Error fetching applicants", err));
+        });
+    }, [jobs]);
 
     const fetchJobs = async () => {
         try {
@@ -63,7 +80,8 @@ const RecruiterDashboard = () => {
             job_title: jobTitle,
             org_name: orgName,
             job_description: jobDescription,
-            job_deadline: jobDeadline,
+            job_type: jobType,
+            application_deadline: jobDeadline,
             compensation: {
                 fixed_salary: fixedSalary,
                 variable_component: bonus || 0, // Default to 0 if empty
@@ -113,9 +131,9 @@ const RecruiterDashboard = () => {
         setOrgName(job.org_name);
         setJobTitle(job.job_title);
         setJobDescription(job.job_description);
-        setjobDeadline(job.job_deadline);
+        setjobDeadline(job.application_deadline);
         setFixedSalary(job.compensation?.fixed_salary || "");
-        setBonus(job.compensation?.bonus || "");
+        setBonus(job.compensation?.variable_component || "");
         setBranchesEligible(job.branches_eligible);
     };
 
@@ -138,6 +156,7 @@ const RecruiterDashboard = () => {
         setEditingJobId(null);
         setJobTitle("");
         setJobDescription("");
+        setJobType("");
         setjobDeadline("");
         setFixedSalary("");
         setBonus("");
@@ -198,6 +217,21 @@ const RecruiterDashboard = () => {
                             className="w-full p-2 mt-1 border border-gray-300 rounded-md"
                             required
                         />
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <label className="block mb-2 font-medium">Job Type</label>
+                        <select
+                            value={jobType}
+                            onChange={(e) => setJobType(e.target.value)}
+                            className="border p-2 rounded-md w-full"
+                            required
+                        >
+                            <option value="">Select Job Type</option>
+                            <option value="Internship">Internship</option>
+                            <option value="PPO">PPO</option>
+                            <option value="Full-Time">Full-Time</option>
+                        </select>
                     </div>
 
                     <div className="md:col-span-2">
@@ -302,25 +336,41 @@ const RecruiterDashboard = () => {
                                 </div>
 
                             </div>
-                            <p className="text-sm text-gray-600">📅 Deadline: {job.job_deadline}</p>
+                            <p className="text-sm text-gray-600">📅 Deadline: {job.application_deadline}</p>
                             <p className="text-sm text-gray-600">💰 Fixed Salary: {job.compensation?.fixed_salary}</p>
                             <p className="text-sm text-gray-600">🎁 Bonus: {job.compensation?.variable_component}</p>
+                            <p className="text-sm text-gray-600">🧾 Job Type: {job.job_type}</p>
 
-                            {/* Applicants List */}
                             <h4 className="mt-4 font-semibold">Applicants</h4>
-                            {job.applicants?.length > 0 ? (
+                            {applicantsByJob[job._id]?.length > 0 ? (
                                 <ul>
-                                    {job.applicants.map((applicant) => (
+                                    {applicantsByJob[job._id].map((applicant) => (
                                         <li key={applicant._id} className="flex justify-between items-center py-2 border-b">
-                                            <p>{applicant.name} - {applicant.email}</p>
-                                            <div>
-                                                <button onClick={() => handleApplicationStatus(applicant._id, job._id, "Selected")} className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">
-                                                    Accept
-                                                </button>
-                                                <button onClick={() => handleApplicationStatus(applicant._id, job._id, "Rejected")} className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 ml-2">
-                                                    Reject
-                                                </button>
-                                            </div>
+                                            <p>
+                                                {applicant.name} - {applicant.email} -
+                                                <span className={`ml-2 font-medium ${applicant.status === 'Selected' ? 'text-green-600' :
+                                                    applicant.status === 'Rejected' ? 'text-red-500' :
+                                                        'text-yellow-500'
+                                                    }`}>
+                                                    {applicant.status}
+                                                </span>
+                                            </p>
+                                            {applicant.status === 'Pending' && (
+                                                <div>
+                                                    <button
+                                                        onClick={() => handleApplicationStatus(applicant.student_id, job._id, "Selected")}
+                                                        className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600"
+                                                    >
+                                                        Accept
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleApplicationStatus(applicant.student_id, job._id, "Rejected")}
+                                                        className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 ml-2"
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </div>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>

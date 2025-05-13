@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import customApi from "../custom-api/axiosInstance";
 import branchesList from "../shared/branchesList";
+import FeedbackModal from "../components/FeedbackModal";
 
 const RecruiterDashboard = () => {
     const [jobs, setJobs] = useState([]);
@@ -412,6 +413,7 @@ const RecruiterDashboard = () => {
                     ))}
                 </ul>
             )}
+            <FeedbackModal />
         </div>
     );
 };

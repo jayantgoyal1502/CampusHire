@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import customApi from "../custom-api/axiosInstance";
+import FeedbackModal from "../components/FeedbackModal";
 
 const StudentDashboard = () => {
     const [jobs, setJobs] = useState([]);
@@ -8,7 +9,6 @@ const StudentDashboard = () => {
         phone: "",
         cgpa: "",
         resume_url: "",
-        branch: ""
     });
     const [editMode, setEditMode] = useState(false);
     const token = localStorage.getItem("token");
@@ -112,18 +112,6 @@ const StudentDashboard = () => {
                                 placeholder="Enter your phone number"
                                 value={profile.phone}
                                 onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-600">Branch</label>
-                            <input
-                                type="text"
-                                placeholder="Enter your branch"
-                                value={profile.branch}
-                                onChange={(e) => setProfile({ ...profile, branch: e.target.value })}
                                 className="w-full p-2 border border-gray-300 rounded-md"
                                 required
                             />
@@ -286,6 +274,7 @@ const StudentDashboard = () => {
                     </ul>
                 )}
             </section>
+            <FeedbackModal />
         </div>
     );
 };

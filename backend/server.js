@@ -46,6 +46,7 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/feedback", require("./routes/feedback"));
 
 app.get("/", (req, res) => {
     res.send("CampusHire API is running...");

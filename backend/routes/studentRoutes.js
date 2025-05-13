@@ -150,7 +150,8 @@ router.put("/update-profile", protect, async (req, res) => {
         if (cgpa) student.cgpa = cgpa;
         if (resume_url) student.resume_url = resume_url;
 
-        await student.save();
+        await student.save({ validateBeforeSave: false });
+
         res.json({ message: "Profile updated successfully", student });
     } catch (error) {
         res.status(500).json({ error: error.message });

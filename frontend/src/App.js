@@ -11,12 +11,12 @@ import DashboardPage from "./pages/DashboardPage";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
-import './index.css';  // Import index.css
+import './index.css';
 
 const App = () => {
     return (
         <div className="bg-gray-100 min-h-screen">
-            <Navbar />  {/* ✅ Added Navbar globally */}
+            <Navbar />
             <div className="container mx-auto px-4 py-6">
                 <Routes>
                     <Route path="/" element={<HomePage />} />

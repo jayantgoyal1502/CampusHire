@@ -34,7 +34,7 @@ const jobSchema = new mongoose.Schema(
             }
         },
         bond_required: { type: Boolean, default: false },
-        job_type: { type: String, enum: ["Full-time","Internship", "PPO"]},
+        job_type: { type: String, enum: ["Full-Time","Internship", "PPO"]},
         selection_process: [{ type: String }],
         job_location: {
             india: { type: Boolean, default: true },

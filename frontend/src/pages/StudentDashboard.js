@@ -180,7 +180,7 @@ const StudentDashboard = () => {
                                 <p><strong>🗣️ Languages Known:</strong> {profile.languages_known?.join(", ")}</p>
                                 <p><strong>🌍 Preferred Locations:</strong> {profile.preferred_location?.join(", ")}</p>
                                 <p><strong>🛠 Skills:</strong> {profile.skills?.join(", ")}</p>
-                                <p><strong>📌 Placement Status:</strong> {profile.placement_status}</p>
+                                <p><strong>📌 Placement Status:</strong> {profile.placement_status_combined}</p>
                                 <p><strong>📜 Certifications:</strong></p>
                                 <ul className="list-disc list-inside">
                                     {profile.certifications?.map((cert, idx) => (

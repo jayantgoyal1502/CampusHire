@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import customApi from "../custom-api/axiosInstance";
+import branchesList from "../shared/branchesList";
 
 const RecruiterDashboard = () => {
     const [jobs, setJobs] = useState([]);
@@ -12,6 +13,7 @@ const RecruiterDashboard = () => {
     const [jobDescription, setJobDescription] = useState("");
     const [jobType, setJobType] = useState("");
     const [branchesEligible, setBranchesEligible] = useState([]);
+    const [coursesEligible, setCoursesEligible] = useState([]);
     const [jobDeadline, setjobDeadline] = useState("");
     const [fixedSalary, setFixedSalary] = useState("");
     const [bonus, setBonus] = useState("");
@@ -19,8 +21,6 @@ const RecruiterDashboard = () => {
 
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
-
-    const branchesList = ["CSE", "IT", "ECE", "EE", "IPE", "TT", "Civil", "ME", "BT"];
 
     useEffect(() => {
         if (company?.org_name) {
@@ -87,6 +87,7 @@ const RecruiterDashboard = () => {
                 variable_component: bonus || 0, // Default to 0 if empty
             },
             branches_eligible: branchesEligible,
+            courses_eligible: coursesEligible,
         };
 
         try {
@@ -125,6 +126,16 @@ const RecruiterDashboard = () => {
             checked ? [...prevBranches, value] : prevBranches.filter((branch) => branch !== value)
         );
     };
+    const handleCourseChange = (e) => {
+        const selectedCourse = e.target.value;
+        setCoursesEligible((prevCourses) => {
+            if (prevCourses.includes(selectedCourse)) {
+                return prevCourses.filter((course) => course !== selectedCourse);
+            } else {
+                return [...prevCourses, selectedCourse];
+            }
+        });
+    };
 
     const handleEditJob = (job) => {
         setEditingJobId(job._id);
@@ -135,6 +146,7 @@ const RecruiterDashboard = () => {
         setFixedSalary(job.compensation?.fixed_salary || "");
         setBonus(job.compensation?.variable_component || "");
         setBranchesEligible(job.branches_eligible);
+        setCoursesEligible(job.couses_eligible);
     };
 
     const handleApplicationStatus = async (student_id, job_id, status) => {
@@ -161,6 +173,7 @@ const RecruiterDashboard = () => {
         setFixedSalary("");
         setBonus("");
         setBranchesEligible([]);
+        setCoursesEligible([]);
     };
 
     return (
@@ -247,6 +260,24 @@ const RecruiterDashboard = () => {
                                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                     />
                                     <span className="text-sm">{branch}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <label className="block text-sm font-medium">Eligible Courses</label>
+                        <div className="w-full p-2 mt-1 border border-gray-300 rounded-md">
+                            {['B.Tech', 'M.Tech', 'MCA'].map((course) => (
+                                <label key={course} className="flex items-center space-x-2 py-1">
+                                    <input
+                                        type="checkbox"
+                                        value={course}
+                                        checked={coursesEligible.includes(course)}
+                                        onChange={handleCourseChange}
+                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm">{course}</span>
                                 </label>
                             ))}
                         </div>

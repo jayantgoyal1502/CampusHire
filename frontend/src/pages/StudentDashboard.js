@@ -67,7 +67,7 @@ const StudentDashboard = () => {
 
             alert("Application submitted successfully!");
             const updatedAppliedJobs = await fetchAppliedJobs();
-            setAppliedJobs(updatedAppliedJobs); 
+            setAppliedJobs(updatedAppliedJobs);
         } catch (error) {
             alert("Failed to apply: " + (error.response?.data?.error || "Unknown error"));
         } finally {
@@ -180,7 +180,7 @@ const StudentDashboard = () => {
                                 <p><strong>🗣️ Languages Known:</strong> {profile.languages_known?.join(", ")}</p>
                                 <p><strong>🌍 Preferred Locations:</strong> {profile.preferred_location?.join(", ")}</p>
                                 <p><strong>🛠 Skills:</strong> {profile.skills?.join(", ")}</p>
-                                <p><strong>📌 Placement Status:</strong> {profile.placement_status}</p>
+                                <p><strong>📌 Placement Status:</strong> {profile.placement_status_combined}</p>
                                 <p><strong>📜 Certifications:</strong></p>
                                 <ul className="list-disc list-inside">
                                     {profile.certifications?.map((cert, idx) => (
@@ -215,10 +215,10 @@ const StudentDashboard = () => {
                                     </h4>
                                     <span
                                         className={`text-sm font-medium px-3 py-1 rounded-full ${job.approval_status === "Selected"
-                                                ? "bg-green-100 text-green-700"
-                                                : job.approval_status === "Rejected"
-                                                    ? "bg-red-100 text-red-700"
-                                                    : "bg-yellow-100 text-yellow-700"
+                                            ? "bg-green-100 text-green-700"
+                                            : job.approval_status === "Rejected"
+                                                ? "bg-red-100 text-red-700"
+                                                : "bg-yellow-100 text-yellow-700"
                                             }`}
                                     >
                                         {job.approval_status}
@@ -234,51 +234,57 @@ const StudentDashboard = () => {
             {/* Available Jobs Section */}
             <section className="bg-white p-6 rounded-lg shadow-md">
                 <h3 className="text-2xl font-semibold text-gray-700">📌 Available Jobs</h3>
-                <ul className="space-y-4">
-                    {Array.isArray(jobs) && jobs.map((job) => (
-                        <li key={job._id} className="border-b py-2">
-                            <strong>{job.org_name}</strong>
-                            <br />
-                            <strong>{job.job_title}</strong> - {job.job_description}
-                            <br />
-                            <span>📅 Deadline: {job.job_deadline}</span>                                
-                            <br />
-                            <span>💰 Salary: {job.compensation.fixed_salary}</span>
-                            <br />
-                            <span>🧾 Job Type: {job.job_type}</span>
-                            <br />
-                            <span className={`font-bold ${job.job_status === "Expired" ? "text-red-500" : "text-green-600"}`}>
-                                Status: {job.job_status}
-                            </span>
-                            <br />
+                {jobs.length === 0 ? (
+                    <div className="text-center text-gray-500 py-10">
+                        <p className="text-lg">Sorry, you have no available jobs yet.</p>
+                    </div>
+                ) : (
+                    <ul className="space-y-4">
+                        {Array.isArray(jobs) && jobs.map((job) => (
+                            <li key={job._id} className="border-b py-2">
+                                <strong>{job.org_name}</strong>
+                                <br />
+                                <strong>{job.job_title}</strong> - {job.job_description}
+                                <br />
+                                <span>📅 Deadline: {job.job_deadline}</span>
+                                <br />
+                                <span>💰 Salary: {job.compensation.fixed_salary}</span>
+                                <br />
+                                <span>🧾 Job Type: {job.job_type}</span>
+                                <br />
+                                <span className={`font-bold ${job.job_status === "Expired" ? "text-red-500" : "text-green-600"}`}>
+                                    Status: {job.job_status}
+                                </span>
+                                <br />
 
-                            {job.job_status === "Expired" ? (
-                                <button
-                                    disabled
-                                    className="mt-2 px-4 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed"
-                                >
-                                    ❌ Job Expired
-                                </button>
-                            ) : appliedJobs.some((appliedJob) => appliedJob.job_id._id === job._id) ? (
-                                <button
-                                    disabled
-                                    className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md cursor-not-allowed"
-                                >
-                                    ✅ Already Applied
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={() => handleApplyJob(job._id)}
-                                    disabled={loadingJobId === job._id}
-                                    className={`mt-2 px-4 py-2 rounded-md text-white ${loadingJobId === job._id ? "bg-blue-400 cursor-wait" : "bg-blue-600 hover:bg-blue-500"
-                                        }`}
-                                >
-                                    {loadingJobId === job._id ? "Applying..." : "Apply"}
-                                </button>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                                {job.job_status === "Expired" ? (
+                                    <button
+                                        disabled
+                                        className="mt-2 px-4 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed"
+                                    >
+                                        ❌ Job Expired
+                                    </button>
+                                ) : appliedJobs.some((appliedJob) => appliedJob.job_id._id === job._id) ? (
+                                    <button
+                                        disabled
+                                        className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md cursor-not-allowed"
+                                    >
+                                        ✅ Already Applied
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => handleApplyJob(job._id)}
+                                        disabled={loadingJobId === job._id}
+                                        className={`mt-2 px-4 py-2 rounded-md text-white ${loadingJobId === job._id ? "bg-blue-400 cursor-wait" : "bg-blue-600 hover:bg-blue-500"
+                                            }`}
+                                    >
+                                        {loadingJobId === job._id ? "Applying..." : "Apply"}
+                                    </button>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </section>
         </div>
     );

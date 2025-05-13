@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const branchesList = require("../shared/branchesList");
 
 const studentSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -21,7 +22,7 @@ const studentSchema = new mongoose.Schema({
     graduation_year: {
         type: Number,
     },
-    branch: { type: String, required: true },
+    branch: { type: String, enum: branchesList, required: true },
     cgpa: {
         type: Number,
         required: true,
@@ -68,10 +69,6 @@ const studentSchema = new mongoose.Schema({
     fulltime_offer_status: { 
         type: String, 
         enum: ["Selected", "Rejected", "Pending", "None"], default: "None" 
-    },
-    placement_status: {
-        type: String,
-        enum: ["Unplaced", "Interned", "PPO-offered", "Placed"], default: "Unplaced"
     },
     password: {
         type: String,
@@ -127,23 +124,24 @@ studentSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-studentSchema.pre('save', function(next) {                          //mongoose pre-save hook
-    if (this.internship_offer_status === "Selected") {
-        this.placement_status = "Interned";
-    } else if (this.ppo_offer_status === "Selected") {
-        this.placement_status = "PPO-offered";
-    } else if (this.fulltime_offer_status === "Selected") {
-        this.placement_status = "Placed";
-    } else {
-        this.placement_status = "Unplaced";
-    }
-    next();
+//virtual fields are updated on the fly - will not stored in DB 
+studentSchema.virtual("placement_status_combined").get(function () {            
+    const status = [];
+
+    if (this.internship_offer_status === "Selected") status.push("Interned");
+    if (this.ppo_offer_status === "Selected") status.push("PPO-offered");
+    if (this.fulltime_offer_status === "Selected") status.push("Placed");
+
+    return status.length > 0 ? status.join(" + ") : "Unplaced";
 });
+
+studentSchema.set("toJSON", { virtuals: true });
+studentSchema.set("toObject", { virtuals: true });
 
 studentSchema.methods.hasOfferFor = function (jobType) {
     if (jobType === "Internship") return this.internship_offer_status === "Selected";
     if (jobType === "PPO") return this.ppo_offer_status === "Selected";
-    if (jobType === "Full-time") return this.fulltime_offer_status === "Selected";
+    if (jobType === "Full-Time") return this.fulltime_offer_status === "Selected";
     return false;
 };
 

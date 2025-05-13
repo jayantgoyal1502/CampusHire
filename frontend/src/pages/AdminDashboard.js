@@ -100,7 +100,7 @@ const AdminDashboard = () => {
                                     <p><span className="font-medium">Graduation Year:</span> {student.graduation_year}</p>
                                     <p><span className="font-medium">Branch:</span> {student.branch}</p>
                                     <p><span className="font-medium">CGPA:</span> {student.cgpa}</p>
-                                    <p><span className="font-medium">Placement Status:</span> {student.placement_status}</p>
+                                    <p><span className="font-medium">Placement Status:</span> {student.placement_status_combined}</p>
                                     <p><span className="font-medium">Applied Jobs:</span> {student.applied_jobs.length}</p>
                                 </div>
 

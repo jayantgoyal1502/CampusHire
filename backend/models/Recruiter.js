@@ -19,7 +19,7 @@ const recruiterSchema = new mongoose.Schema(
             enum: ["Govt", "PSU", "Private", "MNC", "Startup", "NGO", "Other"],
             required: true
         },
-        sector: { type: String, required: true },
+        sector: { type: String},
         participation_type: {
             type: String,
             enum: ["Virtual", "On-Campus"],

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaGraduationCap, FaFileAlt, FaIdBadge } from "react-icons/fa";
 import StudentResumeUpload from "../components/StudentResumeUpload";
+import branchesList from "../shared/branchesList";
 
 const RegisterPage = () => {
     const [name, setName] = useState("");
@@ -60,13 +61,12 @@ const RegisterPage = () => {
                     { label: "Confirm Password", value: confirm_password, setValue: setConfirmPassword, icon: <FaLock />, type: "password" },
                     { label: "Phone Number", value: phone, setValue: setPhone, icon: <FaPhone /> },
                     { label: "Roll Number", value: rollnum, setValue: setRollnum, icon: <FaIdBadge /> },
-                    { label: "Branch", value: branch, setValue: setBranch, icon: <FaGraduationCap /> },
                     { label: "CGPA", value: cgpa, setValue: setCgpa, icon: <FaGraduationCap />, type: "number" },
                     { label: "Graduation Year", value: year, setValue: setYear, icon: <FaGraduationCap />, type: "number" },
                     { label: "Resume URL", value: resumeUrl, setValue: setResumeUrl, icon: <FaFileAlt /> }]
                         .map(({ label, value, setValue, icon, type = "text" }, index) => (
                             <div key={index} className="relative">
-                                <span className="absolute left-3 top-3 text-gray-500">{icon}</span>
+                                <span className="absolute left-3 top-3 text-gray-600">{icon}</span>
                                 <input
                                     type={type}
                                     placeholder={label}
@@ -77,7 +77,21 @@ const RegisterPage = () => {
                                 />
                             </div>
                         ))}
-
+                    <div className="relative">
+                        <label className="block mb-1 text-gray-700 font-semibold">
+                        </label>
+                        <select
+                            value={branch}
+                            onChange={(e) => setBranch(e.target.value)}
+                            required
+                            className="w-full pl-3 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        >
+                            <option value="">Select your branch</option>
+                            {branchesList.map((b) => (
+                                <option key={b} value={b}>{b}</option>
+                            ))}
+                        </select>
+                    </div>
                     <div className="relative">
                         <select
                             value={course}

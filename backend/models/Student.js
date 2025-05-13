@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const branchesList = require("../shared/branchesList");
 
 const studentSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -21,7 +22,7 @@ const studentSchema = new mongoose.Schema({
     graduation_year: {
         type: Number,
     },
-    branch: { type: String, required: true },
+    branch: { type: String, enum: branchesList, required: true },
     cgpa: {
         type: Number,
         required: true,

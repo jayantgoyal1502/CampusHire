@@ -24,10 +24,17 @@ router.post("/create", protect, async (req, res) => {
     }
 });
 
-//Get all job postings (Authenticated users)
+// Get all job postings (only for eligible branches and courses)
 router.get("/", protect, async (req, res) => {
     try {
-        const jobs = await Job.find().populate("company_id", "org_name");
+        const student = await Student.findById(req.user._id);
+        if (!student) return res.status(404).json({ error: "Student not found" });
+
+        // Filter jobs by both branch and course
+        const jobs = await Job.find({
+            branches_eligible: { $in: [student.branch] },
+            // batch_eligible: { $in: [student.course] },
+        }).populate("company_id", "org_name");
 
         const currentDate = new Date();
         const updates = [];
@@ -141,7 +148,7 @@ router.get("/:jobId", protect, async (req, res) => {
             job.job_status = "Expired";
             await job.save();
         }
-        res.json(job); 
+        res.json(job);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

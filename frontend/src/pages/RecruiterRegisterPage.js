@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import customApi from "../custom-api/axiosInstance";
 import { FaBuilding, FaEnvelope, FaLock, FaUser, FaBriefcase, FaPhone, FaIndustry, FaGlobe } from "react-icons/fa";
 
 const RecruiterRegisterPage = () => {
@@ -76,7 +76,7 @@ const RecruiterRegisterPage = () => {
         console.log("Sending Data:", requestData);
 
         try {
-            const { data } = await axios.post("http://localhost:5001/api/recruiters/register", requestData);
+            const { data } = await customApi.post("/recruiters/register", requestData);
             console.log("Registration Success:", data);
             localStorage.setItem("token", data.token);
             navigate("/dashboard/recruiter");

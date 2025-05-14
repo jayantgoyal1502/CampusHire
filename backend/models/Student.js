@@ -29,34 +29,25 @@ const studentSchema = new mongoose.Schema({
         min: 0,
         max: 10
     },
-    resume_url: {
-        type: String,
-        validate: {
-            validator: function (v) {
-                return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
+    resumes: [
+        {
+            category: {
+                type: String,
+                enum: ["Software", "Engineering", "Finance", "Other"],
+                required: true
             },
-            message: "Invalid resume URL"
+            resume_url: {
+                type: String,
+                validate: {
+                    validator: function(v) {
+                        return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
+                    },
+                    message: "Invalid resume URL"
+                },
+                required: true
+            }
         }
-    },
-    // resumes: [
-    //     {
-    //         category: {
-    //             type: String,
-    //             enum: ["Software", "Engineering", "Finance", "Other"],
-    //             required: true
-    //         },
-    //         resume_url: {
-    //             type: String,
-    //             validate: {
-    //                 validator: function(v) {
-    //                     return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
-    //                 },
-    //                 message: "Invalid resume URL"
-    //             },
-    //             required: true
-    //         }
-    //     }
-    // ],
+    ],
 
     internship_offer_status: { 
         type: String, 

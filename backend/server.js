@@ -2,37 +2,29 @@ require("dotenv").config({ path: "./backend/.env" }); // Explicitly define the p
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
-const multer = require("multer");
-const path = require("path");
-
 connectDB();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Multer setup for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "backend/t-uploads/"); // Ensure this folder exists
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname);
-    }
-});
-const upload = multer({ storage });
+const fs = require("fs");
+const path = require("path");
 
-// Serve uploaded files statically
-app.use("/t-uploads", express.static(path.join(__dirname, "t-uploads")));
+const uploadsDir = path.join(__dirname, "uploads");
+const resumesDir = path.join(uploadsDir, "resumes");
 
-// Resume Upload API
-app.post("/api/students/upload-resume", upload.single("resume"), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded" });
-    }
-    const fileUrl = `${process.env.BACKEND_URL || "http://localhost:5001"}/t-uploads/${req.file.filename}`;
-    res.status(201).json({ fileUrl });
-});
+// Ensure uploads and resumes folders exist
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
+
+if (!fs.existsSync(resumesDir)) {
+    fs.mkdirSync(resumesDir);
+}
+
+// Serve static resumes files
+app.use("/uploads/resumes", express.static(path.join(__dirname, "uploads/resumes")));
 
 // Import Routes
 const recruiterRoutes = require("./routes/recruiterRoutes");

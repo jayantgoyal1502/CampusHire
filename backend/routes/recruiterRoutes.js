@@ -8,17 +8,13 @@ const router = express.Router();
 // Route: Register a new recruiter
 router.post("/register", async (req, res) => {
     try {
-        console.log("Received Data:", req.body); // Debugging line
-
         const { contact_email } = req.body;
 
-        // Check if recruiter already exists
         const existingRecruiter = await Recruiter.findOne({ contact_email });
         if (existingRecruiter) {
             return res.status(400).json({ error: "Recruiter already exists" });
         }
 
-        // Create new recruiter
         const recruiter = new Recruiter(req.body);
         await recruiter.save();
 
@@ -34,7 +30,6 @@ router.post("/register", async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
-
 
 // Route: Recruiter login
 router.post("/login", async (req, res) => {

@@ -8,11 +8,14 @@ const StudentDashboard = () => {
     const [profile, setProfile] = useState({
         phone: "",
         cgpa: "",
-        resume_url: "",
     });
     const [editMode, setEditMode] = useState(false);
     const token = localStorage.getItem("token");
     const [loadingJobId, setLoadingJobId] = useState(null);
+
+    const [resumes, setResumes] = useState([]); // New resumes array
+    const [newResumeFiles, setNewResumeFiles] = useState([]); // For newly selected files
+    const [newResumeMeta, setNewResumeMeta] = useState([]); // Metadata (category) for new resumes
 
     useEffect(() => {
         fetchJobs();
@@ -52,6 +55,7 @@ const StudentDashboard = () => {
             const { data } = await customApi.get("/students/profile", {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            setResumes(data.resumes || []);
             setProfile(data);
         } catch (error) {
             console.error("Error fetching student profile", error);
@@ -75,14 +79,52 @@ const StudentDashboard = () => {
         }
     };
 
+    const CategoryEnum = ["Software", "Engineering", "Finance", "Other"];  // Enum values for category
+
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
+
+        // Ensure that all new resumes have categories
+        const missingCategories = newResumeMeta.filter((meta) => !meta.category);
+        if (missingCategories.length > 0) {
+            return alert("Please select a category for all resumes.");
+        }
+
+        // Ensure that all categories are valid (i.e., they match the allowed categories in CategoryEnum)
+        const invalidCategories = newResumeMeta.filter((meta) => !CategoryEnum.includes(meta.category));
+        if (invalidCategories.length > 0) {
+            return alert("Some categories are invalid. Please select a valid category.");
+        }
+
         try {
-            await customApi.put("/students/update-profile", profile, {
-                headers: { Authorization: `Bearer ${token}` },
+            const formData = new FormData();
+            formData.append("phone", profile.phone);
+            formData.append("cgpa", profile.cgpa);
+
+            // Create an array to hold all metadata for the resumes
+            const resumesMeta = newResumeFiles.map((file, index) => ({
+                filename: file.name,  // Assuming you're using the file's name for the filename
+                category: newResumeMeta[index].category,
+            }));
+
+            formData.append("resumesMeta", JSON.stringify(resumesMeta));
+
+            // Append the resume files
+            newResumeFiles.forEach((file) => {
+                formData.append("resumes", file); // Appending all files under the same key "resumes"
             });
+
+            await customApi.put("/students/update-profile", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
             alert("Profile updated successfully!");
             setEditMode(false);
+            setNewResumeFiles([]);
+            setNewResumeMeta([]);
             fetchStudentProfile();
         } catch (error) {
             alert("Failed to update profile: " + (error.response?.data?.error || "Unknown error"));
@@ -131,16 +173,73 @@ const StudentDashboard = () => {
                         </div>
 
                         <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-600">Resume URL</label>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">Existing Resumes</label>
+                            <ul className="list-disc list-inside text-sm">
+                                {resumes.length > 0 ? (
+                                    resumes.map((resume, index) => (
+                                        <li key={index}>
+                                            <a
+                                                href={resume.resume_url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="text-blue-600 underline"
+                                            >
+                                                {resume.category || `Resume ${index + 1}`}
+                                            </a>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <p className="text-gray-500">No resumes uploaded yet.</p>
+                                )}
+                            </ul>
+                        </div>
+
+                        {/* Upload New Resumes */}
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">Add New Resumes</label>
                             <input
-                                type="text"
-                                placeholder="Paste your resume link"
-                                value={profile.resume_url}
-                                onChange={(e) => setProfile({ ...profile, resume_url: e.target.value })}
+                                type="file"
+                                multiple
+                                accept=".pdf,.doc,.docx"
+                                onChange={(e) => {
+                                    const files = Array.from(e.target.files);
+                                    setNewResumeFiles(files);
+
+                                    // Initialize meta with empty categories
+                                    const meta = files.map((file) => ({ filename: file.name, category: "" }));
+                                    setNewResumeMeta(meta);
+                                }}
                                 className="w-full p-2 border border-gray-300 rounded-md"
-                                required
                             />
                         </div>
+
+                        {/* Input for category of each uploaded resume */}
+                        {newResumeFiles.map((file, index) => (
+                            <div key={index} className="mt-2">
+                                <label className="block text-sm text-gray-600">
+                                    Category for <span className="font-semibold">{file.name}</span>
+                                </label>
+                                <select
+                                    value={newResumeMeta[index]?.category || ""}
+                                    onChange={(e) => {
+                                        const updatedMeta = [...newResumeMeta];
+                                        updatedMeta[index] = {
+                                            filename: file.name,
+                                            category: e.target.value,
+                                        };
+                                        setNewResumeMeta(updatedMeta);
+                                    }}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    required
+                                >
+                                    <option value="" disabled>Select a category</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Software">Software</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        ))}
 
                         <button
                             type="submit"
@@ -157,18 +256,40 @@ const StudentDashboard = () => {
                                 <p><strong>📧 Email:</strong> {profile.email}</p>
                                 <p><strong>📞 Phone:</strong> {profile.phone}</p>
                                 <p><strong>🆔 Roll Number:</strong> {profile.rollnum}</p>
+                                <p><strong>📅 Graduation Year:</strong> {profile.graduation_year}</p>
                                 <p><strong>🎓 Course:</strong> {profile.course}</p>
                                 <p><strong>🏫 Branch:</strong> {profile.branch}</p>
-                                <p><strong>📅 Graduation Year:</strong> {profile.graduation_year}</p>
-                                <p><strong>📊 CGPA:</strong> {profile.cgpa}</p><p><strong>📄 Resume:</strong> <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="text-blue-500">View Resume</a></p>
+                                <div>
+                                    <strong>📄 Resumes:</strong>
+                                    {profile.resumes && profile.resumes.length > 0 ? (
+                                        <ul className="mt-1 space-y-1 text-sm">
+                                            {profile.resumes.map((resume, index) => (
+                                                <li key={index} className="flex items-center space-x-2">
+                                                    <span className="text-gray-700">• {resume.category}:</span>
+                                                    <a
+                                                        href={resume.resume_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-500 underline"
+                                                    >
+                                                        View Resume
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="text-sm text-gray-500 italic">No resumes uploaded yet.</p>
+                                    )}
+                                </div>
                                 <p>Don't have a resume? Or want a better one? <a href="https://www.overleaf.com/latex/templates/nit-jalandhar-resume/xfjnhnxsbzbk" target="_blank" rel="noopener noreferrer" className="text-blue-500">Click here</a></p>
                             </div>
 
                             <div className="space-y-2">
+                                <p><strong>📊 CGPA:</strong> {profile.cgpa}</p>
+                                <p><strong>📌 Placement Status:</strong> {profile.placement_status_combined}</p>
                                 <p><strong>🗣️ Languages Known:</strong> {profile.languages_known?.join(", ")}</p>
                                 <p><strong>🌍 Preferred Locations:</strong> {profile.preferred_location?.join(", ")}</p>
                                 <p><strong>🛠 Skills:</strong> {profile.skills?.join(", ")}</p>
-                                <p><strong>📌 Placement Status:</strong> {profile.placement_status_combined}</p>
                                 <p><strong>📜 Certifications:</strong></p>
                                 <ul className="list-disc list-inside">
                                     {profile.certifications?.map((cert, idx) => (

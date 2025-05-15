@@ -73,11 +73,11 @@ const RecruiterRegisterPage = () => {
             category: category,
         };
 
-        console.log("Sending Data:", requestData);
+        // console.log("Sending Data:", requestData);
 
         try {
             const { data } = await customApi.post("/recruiters/register", requestData);
-            console.log("Registration Success:", data);
+            // console.log("Registration Success:", data);
             localStorage.setItem("token", data.token);
             navigate("/dashboard/recruiter");
         } catch (error) {

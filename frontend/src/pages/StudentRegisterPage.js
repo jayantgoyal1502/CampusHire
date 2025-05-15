@@ -64,7 +64,7 @@ const RegisterPage = () => {
                 },
             });
 
-            console.log("Registered successfully:", response.data);
+            // console.log("Registered successfully:", response.data);
             localStorage.setItem("token", response.data.token);
             navigate("/dashboard/student");
             alert("Student registered successfully!");

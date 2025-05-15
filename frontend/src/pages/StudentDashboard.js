@@ -16,6 +16,8 @@ const StudentDashboard = () => {
     const [resumes, setResumes] = useState([]); // New resumes array
     const [newResumeFiles, setNewResumeFiles] = useState([]); // For newly selected files
     const [newResumeMeta, setNewResumeMeta] = useState([]); // Metadata (category) for new resumes
+    const [selectedResumes, setSelectedResumes] = useState({});
+
 
     useEffect(() => {
         fetchJobs();
@@ -42,7 +44,7 @@ const StudentDashboard = () => {
             const { data: appliedJobs } = await customApi.get("/students/applied-jobs", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log("Fetched applied jobs:", appliedJobs);
+            // console.log("Fetched applied jobs:", appliedJobs);
             setAppliedJobs(appliedJobs);
             return appliedJobs;
         } catch (error) {
@@ -63,12 +65,20 @@ const StudentDashboard = () => {
     };
 
     const handleApplyJob = async (jobId) => {
-        setLoadingJobId(jobId); //loading!!
+        const resumeIndex = selectedResumes[jobId]; 
+        if (resumeIndex === undefined) {
+            alert("Please select a resume before applying.");
+            return;
+        }
+        setLoadingJobId(jobId);
         try {
-            await customApi.post(`/applications/${jobId}/apply`, {}, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
+            await customApi.post(
+                `/applications/${jobId}/apply`,
+                { resumeIndex },  // Send resumeIndex in the request body
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
             alert("Application submitted successfully!");
             const updatedAppliedJobs = await fetchAppliedJobs();
             setAppliedJobs(updatedAppliedJobs);
@@ -129,6 +139,11 @@ const StudentDashboard = () => {
         } catch (error) {
             alert("Failed to update profile: " + (error.response?.data?.error || "Unknown error"));
         }
+    };
+
+
+    const handleResumeChange = (jobId, resumeIndex) => {
+        setSelectedResumes(prev => ({ ...prev, [jobId]: resumeIndex }));
     };
 
     return (
@@ -366,33 +381,50 @@ const StudentDashboard = () => {
                                 </span>
                                 <br />
 
-                                {job.job_status === "Expired" ? (
-                                    <button
-                                        disabled
-                                        className="mt-2 px-4 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed"
-                                    >
+                                {/* Show resume selector & apply button if not expired and not applied */}
+                                {job.job_status !== "Expired" && !appliedJobs.some(appliedJob => appliedJob.job_id._id === job._id) && (
+                                    <>
+                                        <div className="mt-2">
+                                            <label className="block text-sm font-medium text-gray-700">Select Resume:</label>
+                                            <select
+                                                value={selectedResumes[job._id] || ''}
+                                                onChange={(e) => handleResumeChange(job._id, e.target.value)}
+                                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                                required
+                                            >
+                                                <option value="" disabled>Select a resume</option>
+                                                {profile.resumes.map((resume, index) => (
+                                                    <option value={index} key={index}>
+                                                        {resume.category || 'General'} - Resume {index + 1}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <button
+                                            onClick={() => handleApplyJob(job._id)}
+                                            disabled={loadingJobId === job._id || !selectedResumes[job._id]}
+                                            className={`mt-2 px-4 py-2 rounded-md text-white ${loadingJobId === job._id ? "bg-blue-400 cursor-wait" : "bg-blue-600 hover:bg-blue-500"}`}
+                                        >
+                                            {loadingJobId === job._id ? "Applying..." : "Apply"}
+                                        </button>
+                                    </>
+                                )}
+
+                                {/* If expired or already applied, show appropriate button */}
+                                {job.job_status === "Expired" && (
+                                    <button disabled className="mt-2 px-4 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed">
                                         ❌ Job Expired
                                     </button>
-                                ) : appliedJobs.some((appliedJob) => appliedJob.job_id._id === job._id) ? (
-                                    <button
-                                        disabled
-                                        className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md cursor-not-allowed"
-                                    >
+                                )}
+                                {appliedJobs.some(appliedJob => appliedJob.job_id._id === job._id) && (
+                                    <button disabled className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md cursor-not-allowed">
                                         ✅ Already Applied
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={() => handleApplyJob(job._id)}
-                                        disabled={loadingJobId === job._id}
-                                        className={`mt-2 px-4 py-2 rounded-md text-white ${loadingJobId === job._id ? "bg-blue-400 cursor-wait" : "bg-blue-600 hover:bg-blue-500"
-                                            }`}
-                                    >
-                                        {loadingJobId === job._id ? "Applying..." : "Apply"}
                                     </button>
                                 )}
                             </li>
                         ))}
                     </ul>
+
                 )}
             </section>
             <FeedbackModal />

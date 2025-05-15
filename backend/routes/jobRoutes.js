@@ -56,7 +56,7 @@ router.get("/", protect, async (req, res) => {
 // Get jobs posted by the logged-in recruiter
 router.get("/recruiter", protect, async (req, res) => {
     try {
-        console.log("Recruiter Check - Authenticated user:", req.user);
+        // console.log("Recruiter Check - Authenticated user:", req.user);
         if (!req.user || !req.user.org_name) {
             return res.status(403).json({ error: "Access denied. Only recruiters can view their jobs." });
         }
@@ -104,8 +104,8 @@ router.put("/:jobId", protect, authorizeRecruiter, async (req, res) => {
 // Delete a job posting (Only recruiters)
 router.delete("/:jobId", protect, authorizeRecruiter, async (req, res) => {
     try {
-        console.log("Job Deletion Request:", req.params.jobId);
-        console.log("Authenticated User:", req.user);
+        // console.log("Job Deletion Request:", req.params.jobId);
+        // console.log("Authenticated User:", req.user);
 
         const job = await Job.findById(req.params.jobId);
         if (!job) {

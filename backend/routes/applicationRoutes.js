@@ -31,6 +31,12 @@ router.get("/:jobId/applicants", protect, async (req, res) => {
             name: app.student_id?.name || "Unknown",
             student_id: app.student_id?._id || null,
             email: app.student_id?.email || "Unknown",
+            rollnum: app.student_rollnum || "N/A",
+            course: app.student_course || "N/A",
+            branch: app.student_branch || "N/A",
+            cgpa: app.student_cgpa || "N/A",
+            resumeCategory: app.selected_resume?.category || "N/A",
+            resumeUrl: app.selected_resume?.resume_url || null,
             status: app.approval_status,
             appliedAt: app.appliedAt
         })));
@@ -45,6 +51,7 @@ router.post("/:jobId/apply", protect, async (req, res) => {
     try {
         const jobId = req.params.jobId;
         const studentId = req.user.id;
+        const resumeIndex = req.body.resumeIndex;
 
         const job = await Job.findById(jobId).populate("company_id", "contact_email org_name");
         if (!job) {
@@ -69,12 +76,30 @@ router.post("/:jobId/apply", protect, async (req, res) => {
             return res.status(400).json({ error: "You have already applied to this job." });
         }
 
+        const selectedResume = student.resumes?.[parseInt(resumeIndex)];
+        if (!selectedResume) {
+            return res.status(400).json({ error: "Invalid resume selected." });
+        }
+
         // Save application
         const newApplication = new Application({
             student_id: studentId,
+            student_rollnum: student.rollnum,
+            student_name: student.name,
+            student_email: student.email,
+            student_course: student.course,
+            student_branch: student.branch,
+            student_cgpa: student.cgpa,
             job_id: jobId,
-            approval_status: "Pending"
+            org_name: job.org_name,
+            job_title: job.job_title,
+            approval_status: "Pending",
+            selected_resume: {
+                resume_url: selectedResume.resume_url,
+                category: selectedResume.category
+            }
         });
+
         await newApplication.save();
         console.log("New application saved");
 
@@ -83,7 +108,7 @@ router.post("/:jobId/apply", protect, async (req, res) => {
         await Student.updateOne(
             { _id: studentId },
             { $push: { applied_jobs: jobId } }
-          );
+        );
         console.log("Student updated with applied job");
 
         // Update Job
@@ -91,8 +116,8 @@ router.post("/:jobId/apply", protect, async (req, res) => {
         await Job.updateOne(
             { _id: jobId },
             { $push: { applicants: studentId } }
-          );
-          
+        );
+
         console.log("Job updated with new applicant");
 
         // Emails

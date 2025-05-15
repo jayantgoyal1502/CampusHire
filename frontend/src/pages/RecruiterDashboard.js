@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import customApi from "../custom-api/axiosInstance";
 import branchesList from "../shared/branchesList";
 import FeedbackModal from "../components/FeedbackModal";
+import ApplicantsList from '../components/ApplicantsList';
 
 const RecruiterDashboard = () => {
     const [jobs, setJobs] = useState([]);
@@ -332,7 +333,6 @@ const RecruiterDashboard = () => {
                     </div>
                 </form>
             </div>
-
             {/* Job Listings */}
             <h3 className="text-2xl font-semibold mt-8 mb-4">Your Job Listings</h3>
             {jobs.length === 0 ? (
@@ -366,49 +366,19 @@ const RecruiterDashboard = () => {
                                         Delete
                                     </button>
                                 </div>
-
                             </div>
+
                             <p className="text-sm text-gray-600">📅 Deadline: {job.job_deadline}</p>
                             <p className="text-sm text-gray-600">💰 Fixed Salary: {job.compensation?.fixed_salary}</p>
                             <p className="text-sm text-gray-600">🎁 Bonus: {job.compensation?.variable_component}</p>
                             <p className="text-sm text-gray-600">🧾 Job Type: {job.job_type}</p>
 
                             <h4 className="mt-4 font-semibold">Applicants</h4>
-                            {applicantsByJob[job._id]?.length > 0 ? (
-                                <ul>
-                                    {applicantsByJob[job._id].map((applicant) => (
-                                        <li key={applicant._id} className="flex justify-between items-center py-2 border-b">
-                                            <p>
-                                                {applicant.name} - {applicant.email} -
-                                                <span className={`ml-2 font-medium ${applicant.status === 'Selected' ? 'text-green-600' :
-                                                    applicant.status === 'Rejected' ? 'text-red-500' :
-                                                        'text-yellow-500'
-                                                    }`}>
-                                                    {applicant.status}
-                                                </span>
-                                            </p>
-                                            {applicant.status === 'Pending' && (
-                                                <div>
-                                                    <button
-                                                        onClick={() => handleApplicationStatus(applicant.student_id, job._id, "Selected")}
-                                                        className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600"
-                                                    >
-                                                        Accept
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleApplicationStatus(applicant.student_id, job._id, "Rejected")}
-                                                        className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 ml-2"
-                                                    >
-                                                        Reject
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-gray-600">No applicants yet.</p>
-                            )}
+                            <ApplicantsList
+                                applicants={applicantsByJob[job._id]}
+                                jobId={job._id}
+                                handleApplicationStatus={handleApplicationStatus}
+                            />
                         </li>
                     ))}
                 </ul>

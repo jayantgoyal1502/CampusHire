@@ -14,7 +14,7 @@ const StudentListing = ({ api_url }) => {
             const { data } = await axios.get(`${api_url}/students/`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log("API Response:", data); // Debug API response
+            // console.log("API Response:", data); 
             if (Array.isArray(data)) {
                 setStudents(data);
             } else {

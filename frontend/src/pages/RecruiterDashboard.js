@@ -16,6 +16,7 @@ const RecruiterDashboard = () => {
     const [jobType, setJobType] = useState("");
     const [branchesEligible, setBranchesEligible] = useState([]);
     const [coursesEligible, setCoursesEligible] = useState([]);
+    const [jobCategory, setJobCategory] = useState("");
     const [jobDeadline, setjobDeadline] = useState("");
     const [fixedSalary, setFixedSalary] = useState("");
     const [bonus, setBonus] = useState("");
@@ -86,10 +87,11 @@ const RecruiterDashboard = () => {
             job_deadline: jobDeadline,
             compensation: {
                 fixed_salary: fixedSalary,
-                variable_component: bonus || 0, // Default to 0 if empty
+                variable_component: bonus || 0,
             },
             branches_eligible: branchesEligible,
             courses_eligible: coursesEligible,
+            job_category:jobCategory,
         };
 
         try {
@@ -103,6 +105,7 @@ const RecruiterDashboard = () => {
                 });
             }
 
+            alert("Job posted successfully!");
             resetForm();
             fetchJobs();
         } catch (error) {
@@ -284,6 +287,24 @@ const RecruiterDashboard = () => {
                             ))}
                         </div>
                     </div>
+
+                    <div className="md:col-span-2">
+  <label className="block mb-2 font-medium">Job Category</label>
+  <select
+    value={jobCategory}
+    onChange={(e) => setJobCategory(e.target.value)}
+    className="border p-2 rounded-md w-full"
+    required
+  >
+    <option value="">Select Job Category</option>
+    <option value="Software">Software</option>
+    <option value="Engineering">Engineering</option>
+    <option value="Marketing">Marketing</option>
+    <option value="Finance">Finance</option>
+    <option value="Design">Design</option>
+  </select>
+</div>
+
 
                     <div>
                         <label className="block text-sm font-medium">Application Deadline</label>

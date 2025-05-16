@@ -34,7 +34,7 @@ router.get("/", protect, async (req, res) => {
 
         const query = {
             branches_eligible: { $in: [student.branch] },
-            // courses_eligible: { $in: [student.course] }, // Uncomment if needed
+            courses_eligible: { $in: [student.course] },
         };
 
         if (job_type) query.job_type = job_type;

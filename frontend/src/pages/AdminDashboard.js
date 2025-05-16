@@ -7,8 +7,8 @@ const AdminDashboard = () => {
     const [students, setStudents] = useState([]);
     const [recruiters, setRecruiters] = useState([]);
 
-    const [jobFilters, setJobFilters] = useState({ role: "", jobCategory: "", status:"" });
-    const [studentFilters, setStudentFilters] = useState({ branch: "", course: ""});
+    const [jobFilters, setJobFilters] = useState({ role: "", jobCategory: "", status: "" });
+    const [studentFilters, setStudentFilters] = useState({ branch: "", course: "" });
     const [recruiterFilters, setRecruiterFilters] = useState({ category: "", participation: "" });
 
     const navigate = useNavigate();
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
 
     const filteredJobs = jobs.filter(job => {
         return (
-            (jobFilters.role === "" || job.job_type === jobFilters.role) && 
+            (jobFilters.role === "" || job.job_type === jobFilters.role) &&
             (jobFilters.status === "" || job.job_status === jobFilters.status) &&
             (jobFilters.jobCategory === "" || job.job_category === jobFilters.jobCategory)
         );
@@ -72,33 +72,48 @@ const AdminDashboard = () => {
         <div className="container mx-auto p-6">
             <h2 className="text-3xl font-bold mb-6 text-center">📊 Admin Dashboard</h2>
 
-            {/* -------------------- JOB FILTERS -------------------- */}
-            <div className="mb-4 bg-gray-100 p-4 rounded-lg shadow">
-                <h3 className="font-semibold text-lg mb-2">Filter Jobs</h3>
-                <div className="grid grid-cols-3 gap-4">
-                    <select onChange={e => setJobFilters(prev => ({ ...prev, role: e.target.value }))} className="p-2 border rounded">
-                        <option value="">All Job Types</option>
-                        {unique(jobs, "job_type").map(type => (
-                            <option key={type} value={type}>{type}</option>
-                        ))}
-                    </select>
-                    <select onChange={e => setJobFilters(prev => ({ ...prev, status: e.target.value }))} className="p-2 border rounded">
-                        <option value="">All Status</option>
-                        <option value="Active">Active</option>
-                        <option value="Expired">Expired</option>
-                    </select>
-                    <select onChange={e => setJobFilters(prev => ({ ...prev, jobCategory: e.target.value }))} className="p-2 border rounded">
-                        <option value="">All Categories</option>
-                        {unique(jobs, "job_category").map(category => (
-                            <option key={category} value={category}>{category}</option>
-                        ))}
-                    </select>
+            {/* -------------------- JOBS -------------------- */}
+            <div className="mb-8 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h3 className="text-2xl font-bold mb-6">📌 Job Listings</h3>
+                <h4 className="font-semibold text-xl mb-4">Filter Jobs</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
+                        <select
+                            onChange={e => setJobFilters(prev => ({ ...prev, role: e.target.value }))}
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">All Job Types</option>
+                            {unique(jobs, "job_type").map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select
+                            onChange={e => setJobFilters(prev => ({ ...prev, status: e.target.value }))}
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">All Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Expired">Expired</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select
+                            onChange={e => setJobFilters(prev => ({ ...prev, jobCategory: e.target.value }))}
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">All Categories</option>
+                            {unique(jobs, "job_category").map(category => (
+                                <option key={category} value={category}>{category}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            {/* -------------------- JOB LIST -------------------- */}
-            <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                <h3 className="text-2xl font-semibold mb-4">📌 Job Listings </h3>
                 {filteredJobs.length === 0 ? (
                     <p className="text-gray-600 text-center">No matching jobs.</p>
                 ) : (
@@ -125,10 +140,11 @@ const AdminDashboard = () => {
                 )}
             </div>
 
-            {/* -------------------- STUDENT FILTERS -------------------- */}
-            <div className="mb-4 bg-gray-100 p-4 rounded-lg shadow">
-                <h3 className="font-semibold text-lg mb-2">Filter Students</h3>
-                <div className="grid grid-cols-2 gap-4">
+            {/* -------------------- STUDENTS -------------------- */}
+            <div className="mb-8 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h3 className="text-2xl font-bold mb-4">🎓 Student Listings</h3>
+                <h3 className="font-semibold text-lg mb-4">Filter Students</h3>
+                <div className="grid grid-cols-2 gap-4 mb-4">
                     <select onChange={e => setStudentFilters(prev => ({ ...prev, branch: e.target.value }))} className="p-2 border rounded">
                         <option value="">All Branches</option>
                         {unique(students, "branch").map(branch => (
@@ -142,11 +158,6 @@ const AdminDashboard = () => {
                         ))}
                     </select>
                 </div>
-            </div>
-
-            {/* -------------------- STUDENT LIST -------------------- */}
-            <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                <h3 className="text-2xl font-semibold mb-4">🎓 Student Listings</h3>
                 {filteredStudents.length === 0 ? (
                     <p className="text-gray-600 text-center">No matching students.</p>
                 ) : (
@@ -181,10 +192,11 @@ const AdminDashboard = () => {
                 )}
             </div>
 
-            {/* -------------------- RECRUITER FILTERS -------------------- */}
-            <div className="mb-4 bg-gray-100 p-4 rounded-lg shadow">
-                <h3 className="font-semibold text-lg mb-2">Filter Recruiters</h3>
-                <div className="grid grid-cols-2 gap-4">
+            {/* -------------------- RECRUITERS -------------------- */}
+            <div className="mb-8 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h3 className="text-2xl font-bold mb-6">🏢 Recruiter Listings</h3>
+                <h3 className="font-semibold text-xl mb-4">Filter Recruiters</h3>
+                <div className="grid grid-cols-2 gap-4 mb-4">
                     <select onChange={e => setRecruiterFilters(prev => ({ ...prev, category: e.target.value }))} className="p-2 border rounded">
                         <option value="">All Categories</option>
                         {unique(recruiters, "category").map(cat => (
@@ -198,11 +210,7 @@ const AdminDashboard = () => {
                         ))}
                     </select>
                 </div>
-            </div>
 
-            {/* -------------------- RECRUITER LIST -------------------- */}
-            <div className="bg-white shadow-md rounded-lg p-6">
-                <h3 className="text-2xl font-semibold mb-4">🏢 Recruiter Listings</h3>
                 {filteredRecruiters.length === 0 ? (
                     <p className="text-gray-600 text-center">No matching recruiters.</p>
                 ) : (

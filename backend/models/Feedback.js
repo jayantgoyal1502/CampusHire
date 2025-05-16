@@ -12,5 +12,5 @@ const feedbackSchema = new mongoose.Schema({
     },
     createdAt: { type: Date, default: Date.now },
 });
-
+feedbackSchema.index({ feedback: 1, email: 1 }, { unique: true });
 module.exports = mongoose.model("Feedback", feedbackSchema);

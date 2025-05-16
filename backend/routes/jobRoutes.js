@@ -30,12 +30,26 @@ router.get("/", protect, async (req, res) => {
         const student = await Student.findById(req.user._id);
         if (!student) return res.status(404).json({ error: "Student not found" });
 
-        // Filter jobs by both branch and course
-        const jobs = await Job.find({
-            branches_eligible: { $in: [student.branch] },
-            // batch_eligible: { $in: [student.course] },
-        }).populate("company_id", "org_name");
+        const { job_type, job_category, participation_type, category } = req.query;
 
+        const query = {
+            branches_eligible: { $in: [student.branch] },
+            courses_eligible: { $in: [student.course] },
+        };
+
+        if (job_type) query.job_type = job_type;
+        if (job_category) query.job_category = job_category;
+
+        let jobs = await Job.find(query).populate("company_id", "org_name category participation_type");
+
+        if (req.query.category) {
+            jobs = jobs.filter(job => job.company_id?.category === req.query.category);
+        }
+        if (req.query.participation_type) {
+            jobs = jobs.filter(job => job.company_id?.participation_type === req.query.participation_type);
+        }
+
+        // Mark expired jobs
         const currentDate = new Date();
         const updates = [];
 
@@ -45,7 +59,8 @@ router.get("/", protect, async (req, res) => {
                 updates.push(job.save({ validateBeforeSave: false }));
             }
         }
-        await Promise.all(updates); // Save all updated jobs in parallel
+
+        await Promise.all(updates);
         res.json(jobs);
     } catch (error) {
         res.status(500).json({ error: error.message });

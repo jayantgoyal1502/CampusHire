@@ -25,19 +25,39 @@ const StudentDashboard = () => {
         fetchStudentProfile();
     }, []);
 
-    // Fetch all jobs
+    const [filters, setFilters] = useState({
+        job_type: '',
+        job_category: '',
+        category:'',
+        participation_type:'',
+    });
+
     const fetchJobs = async () => {
         try {
-            const { data } = await customApi.get("/jobs", {
+            const params = new URLSearchParams();
+
+            if (filters.job_type) params.append('job_type', filters.job_type);
+            if (filters.job_category) params.append('job_category', filters.job_category);
+
+            if (filters.category) params.append('category', filters.category);
+            if (filters.participation_type) params.append('participation_type', filters.participation_type);
+
+            const { data } = await customApi.get(`/jobs?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            const currentDate = new Date();
-            const filteredJobs = data.filter(job => new Date(job.job_deadline) > currentDate && job.job_status === "Active");
-            setJobs(filteredJobs);
+            setJobs(data);
         } catch (error) {
             console.error("Error fetching jobs", error);
         }
     };
+
+    const handleFilterChange = (key, value) => {
+        setFilters((prev) => ({ ...prev, [key]: value }));
+    };
+
+    useEffect(() => {
+        fetchJobs();
+    }, [filters]);
 
     const fetchAppliedJobs = async () => {
         try {
@@ -65,7 +85,7 @@ const StudentDashboard = () => {
     };
 
     const handleApplyJob = async (jobId) => {
-        const resumeIndex = selectedResumes[jobId]; 
+        const resumeIndex = selectedResumes[jobId];
         if (resumeIndex === undefined) {
             alert("Please select a resume before applying.");
             return;
@@ -194,7 +214,7 @@ const StudentDashboard = () => {
                                     resumes.map((resume, index) => (
                                         <li key={index}>
                                             <a
-                                                href={resume.resume_url}
+                                                Designef={resume.resume_url}
                                                 target="_blank"
                                                 rel="noreferrer"
                                                 className="text-blue-600 underline"
@@ -282,7 +302,7 @@ const StudentDashboard = () => {
                                                 <li key={index} className="flex items-center space-x-2">
                                                     <span className="text-gray-700">• {resume.category}:</span>
                                                     <a
-                                                        href={resume.resume_url}
+                                                        Designef={resume.resume_url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="text-blue-500 underline"
@@ -296,7 +316,7 @@ const StudentDashboard = () => {
                                         <p className="text-sm text-gray-500 italic">No resumes uploaded yet.</p>
                                     )}
                                 </div>
-                                <p>Don't have a resume? Or want a better one? <a href="https://www.overleaf.com/latex/templates/nit-jalandhar-resume/xfjnhnxsbzbk" target="_blank" rel="noopener noreferrer" className="text-blue-500">Click here</a></p>
+                                <p>Don't have a resume? Or want a better one? <a Designef="https://www.overleaf.com/latex/templates/nit-jalandhar-resume/xfjnhnxsbzbk" target="_blank" rel="noopener noreferrer" className="text-blue-500">Click here</a></p>
                             </div>
 
                             <div className="space-y-2">
@@ -357,13 +377,63 @@ const StudentDashboard = () => {
 
             {/* Available Jobs Section */}
             <section className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-2xl font-semibold text-gray-700">📌 Available Jobs</h3>
+                <h3 className="text-2xl font-semibold text-gray-700 mb-2">📌 Available Jobs</h3>
+                <section className="bg-white p-6 rounded-lg shadow-md mb-4">
+                    <h3 className="text-xl font-semibold mb-2">🎯 Filter Jobs</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+                        <select value={filters.job_type} onChange={(e) => handleFilterChange('job_type', e.target.value)} className="border p-2 rounded">
+                            <option value="">All Job Types</option>
+                            <option value="Full-Time">Full-Time</option>
+                            <option value="Internship">Internship</option>
+                            <option value="PPO">PPO</option>
+                        </select>
+                        <select value={filters.job_category} onChange={(e) => handleFilterChange('job_category', e.target.value)} className="border p-2 rounded">
+                            <option value="">All Categories</option>
+                            <option value="Software">Software</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Design">Design</option>
+                        </select>
+                        <select
+                            value={filters.category}
+                            onChange={(e) => handleFilterChange('category', e.target.value)}
+                            className="border p-2 rounded"
+                        >
+                            <option value="">All Recruiter Categories</option>
+                            <option value="Govt">Govt</option>
+                            <option value="PSU">PSU</option>
+                            <option value="Private">Private</option>
+                            <option value="MNC">MNC</option>
+                            <option value="Startup">Startup</option>
+                            <option value="NGO">NGO</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <select
+                            value={filters.participation_type}
+                            onChange={(e) => handleFilterChange('participation_type', e.target.value)}
+                            className="border p-2 rounded"
+                        >
+                            <option value="">All Participation Types</option>
+                            <option value="Virtual">Virtual</option>
+                            <option value="On-Campus">On-Campus</option>
+                        </select>
+                    </div>
+                </section>
+                <div className="text-sm text-gray-500 m-2">
+                    Showing jobs for:
+                    {filters.job_type && <span> {filters.job_type}</span>}
+                    {filters.job_category && <span>, {filters.job_category}</span>}
+                    {filters.category && <span>, {filters.category}</span>}
+                    {filters.participation_type && <span>, {filters.participation_type}</span>}
+                </div>
                 {jobs.length === 0 ? (
                     <div className="text-center text-gray-500 py-10">
                         <p className="text-lg">Sorry, you have no available jobs yet.</p>
                     </div>
                 ) : (
                     <ul className="space-y-4">
+
                         {Array.isArray(jobs) && jobs.map((job) => (
                             <li key={job._id} className="border-b py-2">
                                 <strong>{job.org_name}</strong>

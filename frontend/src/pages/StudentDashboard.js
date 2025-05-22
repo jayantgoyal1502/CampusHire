@@ -214,7 +214,7 @@ const StudentDashboard = () => {
                                     resumes.map((resume, index) => (
                                         <li key={index}>
                                             <a
-                                                Designef={resume.resume_url}
+                                                href={resume.resume_url}
                                                 target="_blank"
                                                 rel="noreferrer"
                                                 className="text-blue-600 underline"
@@ -302,7 +302,7 @@ const StudentDashboard = () => {
                                                 <li key={index} className="flex items-center space-x-2">
                                                     <span className="text-gray-700">• {resume.category}:</span>
                                                     <a
-                                                        Designef={resume.resume_url}
+                                                        href={resume.resume_url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="text-blue-500 underline"
@@ -316,7 +316,7 @@ const StudentDashboard = () => {
                                         <p className="text-sm text-gray-500 italic">No resumes uploaded yet.</p>
                                     )}
                                 </div>
-                                <p>Don't have a resume? Or want a better one? <a Designef="https://www.overleaf.com/latex/templates/nit-jalandhar-resume/xfjnhnxsbzbk" target="_blank" rel="noopener noreferrer" className="text-blue-500">Click here</a></p>
+                                <p>Don't have a resume? Or want a better one? <a href="https://www.overleaf.com/latex/templates/nit-jalandhar-resume/xfjnhnxsbzbk" target="_blank" rel="noopener noreferrer" className="text-blue-500">Click here</a></p>
                             </div>
 
                             <div className="space-y-2">

@@ -24,7 +24,7 @@ if (!fs.existsSync(resumesDir)) {
 }
 
 // Serve static resumes files
-app.use("/uploads/resumes", express.static(path.join(__dirname, "uploads/resumes")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Import Routes
 const recruiterRoutes = require("./routes/recruiterRoutes");

@@ -177,11 +177,11 @@ const AdminDashboard = () => {
                                     <p><span className="font-medium">Graduation Year:</span> {student.graduation_year}</p>
                                     <p><span className="font-medium">Branch:</span> {student.branch}</p>
                                     <p><span className="font-medium">CGPA:</span> {student.cgpa}</p>
-                                    <p><span className="font-medium">Placement jobCategory:</span> {student.placement_jobCategory_combined}</p>
+                                    <p><span className="font-medium">Placement status:</span> {student.placement_status_combined}</p>
                                     <p><span className="font-medium">Applied Jobs:</span> {student.applied_jobs.length}</p>
                                 </div>
                                 <div className="flex gap-4 mt-4">
-                                    {student.resume_url && <a href={student.resume_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">📚 Resume</a>}
+                                    {/* {student.resume_url && <a href={student.resume_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">📚 Resume</a>} */}
                                     {student.linkedin_url && <a href={student.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">🔗 LinkedIn</a>}
                                     {student.github_url && <a href={student.github_url} target="_blank" rel="noopener noreferrer" className="text-gray-800 hover:underline">💻 GitHub</a>}
                                     {student.portfolio_url && <a href={student.portfolio_url} target="_blank" rel="noopener noreferrer" className="text-gray-800 hover:underline">💻 Portfolio</a>}

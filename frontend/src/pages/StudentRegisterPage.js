@@ -74,9 +74,10 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen py-12 px-4 sm:px-4 lg:px-6">
-            <div className="max-w-lg w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
-                <h2 className="text-center text-4xl font-extrabold text-gray-900">🚀 Student Registration</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 py-16">
+            <div className="max-w-2xl w-full space-y-8 bg-white p-10 rounded-2xl shadow-2xl border border-indigo-100">
+                <h2 className="text-center text-3xl font-extrabold text-indigo-700 mb-6">Student Registration</h2>
+                {/* Add similar professional styling to the registration form fields and buttons below */}
                 <form className="mt-6 space-y-4" onSubmit={handleRegister} encType="multipart/form-data">
                     {[{ label: "Full Name", value: name, setValue: setName, icon: <FaUser /> },
                     { label: "Email", value: email, setValue: setEmail, icon: <FaEnvelope />, type: "email" },

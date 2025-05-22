@@ -182,25 +182,25 @@ const RecruiterDashboard = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-8 bg-white rounded-lg shadow-lg">
+        <div className="max-w-5xl mx-auto p-8 bg-white rounded-2xl shadow-2xl border border-indigo-100">
             {/* Header Section */}
-            <h2 className="text-3xl font-bold text-center mb-8">Recruiter Dashboard</h2>
+            <h2 className="text-4xl font-extrabold text-center mb-10 text-indigo-700 tracking-tight drop-shadow-sm">Recruiter Dashboard</h2>
 
             {/* Company Profile Section */}
-            <div className="flex items-center space-x-4 mb-8 bg-gray-100 p-4 rounded-lg">
-                <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-gray-700">
+            <div className="flex items-center space-x-4 mb-10 bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl shadow">
+                <div className="w-16 h-16 bg-indigo-200 rounded-full flex items-center justify-center text-2xl font-bold text-indigo-700 border-2 border-indigo-400">
                     {company?.org_name ? company.org_name.charAt(0).toUpperCase() : "?"}
                 </div>
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800">{company?.org_name.toUpperCase() || "Company Name"}</h2>
-                    <p className="text-gray-600">{company?.contact_email || "No email provided"}</p>
+                    <h2 className="text-2xl font-semibold text-indigo-800">{company?.org_name.toUpperCase() || "Company Name"}</h2>
+                    <p className="text-gray-500">{company?.contact_email || "No email provided"}</p>
                 </div>
             </div>
 
             {/* Job Posting Form */}
-            <div className="bg-gray-50 p-6 rounded-lg shadow">
-                <h3 className="text-2xl font-semibold mb-4">{editingJobId ? "Edit Job" : "Post a New Job"}</h3>
-                <form onSubmit={handleCreateOrUpdateJob} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-8 rounded-xl shadow-lg border border-indigo-100">
+                <h3 className="text-2xl font-bold mb-6 text-indigo-700">{editingJobId ? "Edit Job" : "Post a New Job"}</h3>
+                <form onSubmit={handleCreateOrUpdateJob} className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                     <div>
                         <label className="block text-sm font-medium">Organisation Name</label>
@@ -209,7 +209,7 @@ const RecruiterDashboard = () => {
                             placeholder="Enter Organisation Name"
                             value={orgName}
                             onChange={(e) => setOrgName(e.target.value)}
-                            className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                            className="w-full p-2 mt-1 border border-indigo-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 bg-indigo-50 text-indigo-900 placeholder:text-indigo-400"
                             required
                         />
                     </div>
@@ -221,7 +221,7 @@ const RecruiterDashboard = () => {
                             placeholder="Enter Job Title"
                             value={jobTitle}
                             onChange={(e) => setJobTitle(e.target.value)}
-                            className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                            className="w-full p-2 mt-1 border border-indigo-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 bg-indigo-50 text-indigo-900 placeholder:text-indigo-400"
                             required
                         />
                     </div>
@@ -232,7 +232,7 @@ const RecruiterDashboard = () => {
                             placeholder="Enter Job Description"
                             value={jobDescription}
                             onChange={(e) => setJobDescription(e.target.value)}
-                            className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                            className="w-full p-2 mt-1 border border-indigo-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 bg-indigo-50 text-indigo-900 placeholder:text-indigo-400 min-h-[80px]"
                             required
                         />
                     </div>
@@ -242,7 +242,7 @@ const RecruiterDashboard = () => {
                         <select
                             value={jobType}
                             onChange={(e) => setJobType(e.target.value)}
-                            className="border p-2 rounded-md w-full"
+                            className="border p-2 rounded-lg w-full border-indigo-200 bg-indigo-50 text-indigo-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
                             required
                         >
                             <option value="">Select Job Type</option>
@@ -254,7 +254,7 @@ const RecruiterDashboard = () => {
 
                     <div className="md:col-span-2">
                         <label className="block text-sm font-medium">Eligible Branches</label>
-                        <div className="w-full p-2 mt-1 border border-gray-300 rounded-md">
+                        <div className="w-full p-2 mt-1 border border-indigo-200 rounded-lg bg-indigo-50">
                             {branchesList.map((branch) => (
                                 <label key={branch} className="flex items-center space-x-2 py-1">
                                     <input
@@ -262,9 +262,9 @@ const RecruiterDashboard = () => {
                                         value={branch}
                                         checked={branchesEligible.includes(branch)}
                                         onChange={handleBranchChange}
-                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                        className="w-4 h-4 text-indigo-600 border-indigo-300 rounded focus:ring-indigo-500"
                                     />
-                                    <span className="text-sm">{branch}</span>
+                                    <span className="text-sm text-indigo-800">{branch}</span>
                                 </label>
                             ))}
                         </div>
@@ -272,7 +272,7 @@ const RecruiterDashboard = () => {
 
                     <div className="md:col-span-2">
                         <label className="block text-sm font-medium">Eligible Courses</label>
-                        <div className="w-full p-2 mt-1 border border-gray-300 rounded-md">
+                        <div className="w-full p-2 mt-1 border border-indigo-200 rounded-lg bg-indigo-50">
                             {['B.Tech', 'M.Tech', 'MCA'].map((course) => (
                                 <label key={course} className="flex items-center space-x-2 py-1">
                                     <input
@@ -280,31 +280,30 @@ const RecruiterDashboard = () => {
                                         value={course}
                                         checked={coursesEligible.includes(course)}
                                         onChange={handleCourseChange}
-                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                        className="w-4 h-4 text-indigo-600 border-indigo-300 rounded focus:ring-indigo-500"
                                     />
-                                    <span className="text-sm">{course}</span>
+                                    <span className="text-sm text-indigo-800">{course}</span>
                                 </label>
                             ))}
                         </div>
                     </div>
 
                     <div className="md:col-span-2">
-  <label className="block mb-2 font-medium">Job Category</label>
-  <select
-    value={jobCategory}
-    onChange={(e) => setJobCategory(e.target.value)}
-    className="border p-2 rounded-md w-full"
-    required
-  >
-    <option value="">Select Job Category</option>
-    <option value="Software">Software</option>
-    <option value="Engineering">Engineering</option>
-    <option value="Marketing">Marketing</option>
-    <option value="Finance">Finance</option>
-    <option value="Design">Design</option>
-  </select>
-</div>
-
+                        <label className="block mb-2 font-medium">Job Category</label>
+                        <select
+                            value={jobCategory}
+                            onChange={(e) => setJobCategory(e.target.value)}
+                            className="border p-2 rounded-lg w-full border-indigo-200 bg-indigo-50 text-indigo-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                            required
+                        >
+                            <option value="">Select Job Category</option>
+                            <option value="Software">Software</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Design">Design</option>
+                        </select>
+                    </div>
 
                     <div>
                         <label className="block text-sm font-medium">Application Deadline</label>
@@ -312,7 +311,7 @@ const RecruiterDashboard = () => {
                             type="date"
                             value={jobDeadline}
                             onChange={(e) => setjobDeadline(e.target.value)}
-                            className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                            className="w-full p-2 mt-1 border border-indigo-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 bg-indigo-50 text-indigo-900"
                             required
                         />
                     </div>
@@ -324,7 +323,7 @@ const RecruiterDashboard = () => {
                             placeholder="Enter Fixed Salary"
                             value={fixedSalary}
                             onChange={(e) => setFixedSalary(e.target.value)}
-                            className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                            className="w-full p-2 mt-1 border border-indigo-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 bg-indigo-50 text-indigo-900 placeholder:text-indigo-400"
                             required
                         />
                     </div>
@@ -336,18 +335,18 @@ const RecruiterDashboard = () => {
                             placeholder="Enter Variable Salary"
                             value={bonus}
                             onChange={(e) => setBonus(e.target.value)}
-                            className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                            className="w-full p-2 mt-1 border border-indigo-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 bg-indigo-50 text-indigo-900 placeholder:text-indigo-400"
                             required
                         />
                     </div>
 
                     {/* Buttons */}
-                    <div className="md:col-span-2 flex space-x-4">
-                        <button type="submit" className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700">
+                    <div className="md:col-span-2 flex space-x-4 mt-4">
+                        <button type="submit" className="px-8 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-300 transition-all">
                             {editingJobId ? "Update Job" : "Post Job"}
                         </button>
                         {editingJobId && (
-                            <button type="button" onClick={resetForm} className="px-6 py-2 bg-gray-400 text-white font-semibold rounded-md hover:bg-gray-500">
+                            <button type="button" onClick={resetForm} className="px-8 py-2 bg-gray-300 text-indigo-700 font-semibold rounded-lg shadow hover:bg-gray-400 focus:ring-2 focus:ring-indigo-200 transition-all">
                                 Cancel
                             </button>
                         )}
@@ -355,19 +354,19 @@ const RecruiterDashboard = () => {
                 </form>
             </div>
             {/* Job Listings */}
-            <h3 className="text-2xl font-semibold mt-8 mb-4">Your Job Listings</h3>
+            <h3 className="text-2xl font-bold mt-12 mb-6 text-indigo-700">Your Job Listings</h3>
             {jobs.length === 0 ? (
-                <p className="text-gray-600 text-center">No jobs posted yet.</p>
+                <p className="text-gray-500 text-center">No jobs posted yet.</p>
             ) : (
-                <ul className="space-y-6">
+                <ul className="space-y-8">
                     {jobs.map((job) => (
-                        <li key={job._id} className="bg-gray-50 p-6 rounded-lg shadow-md">
+                        <li key={job._id} className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl shadow-md border border-indigo-100">
                             <div className="flex justify-between items-center mb-3">
                                 <div>
-                                    <h4 className="text-xl font-semibold">{job.job_title}</h4>
-                                    <p className="text-sm text-gray-500">{job.job_description}</p>
-                                    <p className="text-sm text-gray-500">Posted by: {job.company_id?.org_name || "Unknown Company"}</p>
-                                    <p className={job.job_status === "Expired" ? "text-red-500" : "text-green-600"}>
+                                    <h4 className="text-xl font-bold text-indigo-800">{job.job_title}</h4>
+                                    <p className="text-sm text-indigo-600 mb-1">{job.job_description}</p>
+                                    <p className="text-xs text-gray-500">Posted by: {job.company_id?.org_name || "Unknown Company"}</p>
+                                    <p className={job.job_status === "Expired" ? "text-red-500 font-semibold" : "text-green-600 font-semibold"}>
                                         {job.job_status}
                                     </p>
                                 </div>
@@ -375,26 +374,28 @@ const RecruiterDashboard = () => {
                                     {job.job_status !== "Expired" && (
                                         <button
                                             onClick={() => handleEditJob(job)}
-                                            className="bg-blue-500 text-white py-1 px-4 rounded-md hover:bg-blue-600"
+                                            className="bg-blue-500 text-white py-1 px-4 rounded-lg hover:bg-blue-600 shadow focus:ring-2 focus:ring-blue-200"
                                         >
                                             Edit
                                         </button>
                                     )}
                                     <button
                                         onClick={() => handleDeleteJob(job._id)}
-                                        className="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 ml-2"
+                                        className="bg-red-500 text-white py-1 px-4 rounded-lg hover:bg-red-600 shadow ml-2 focus:ring-2 focus:ring-red-200"
                                     >
                                         Delete
                                     </button>
                                 </div>
                             </div>
 
-                            <p className="text-sm text-gray-600">📅 Deadline: {job.job_deadline}</p>
-                            <p className="text-sm text-gray-600">💰 Fixed Salary: {job.compensation?.fixed_salary}</p>
-                            <p className="text-sm text-gray-600">🎁 Bonus: {job.compensation?.variable_component}</p>
-                            <p className="text-sm text-gray-600">🧾 Job Type: {job.job_type}</p>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-indigo-700 mt-2">
+                                <p className="col-span-1">📅 <span className="font-semibold">Deadline:</span> {job.job_deadline}</p>
+                                <p className="col-span-1">💰 <span className="font-semibold">Fixed Salary:</span> {job.compensation?.fixed_salary}</p>
+                                <p className="col-span-1">🎁 <span className="font-semibold">Bonus:</span> {job.compensation?.variable_component}</p>
+                                <p className="col-span-1">🧾 <span className="font-semibold">Job Type:</span> {job.job_type}</p>
+                            </div>
 
-                            <h4 className="mt-4 font-semibold">Applicants</h4>
+                            <h4 className="mt-4 font-semibold text-indigo-800">Applicants</h4>
                             <ApplicantsList
                                 applicants={applicantsByJob[job._id]}
                                 jobId={job._id}

@@ -88,9 +88,10 @@ const RecruiterRegisterPage = () => {
 
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-center text-3xl font-extrabold text-gray-900">🚀 Recruiter Registration</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 py-16">
+            <div className="max-w-2xl w-full space-y-8 bg-white p-10 rounded-2xl shadow-2xl border border-indigo-100">
+                <h2 className="text-center text-3xl font-extrabold text-indigo-700 mb-6">Recruiter Registration</h2>
+                {/* Add similar professional styling to the registration form fields and buttons below */}
                 <form className="mt-8 space-y-6" onSubmit={handleRegister}>
                     <div className="rounded-md shadow-sm space-y-4">
                         <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">

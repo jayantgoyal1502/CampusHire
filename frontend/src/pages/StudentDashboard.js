@@ -28,8 +28,8 @@ const StudentDashboard = () => {
     const [filters, setFilters] = useState({
         job_type: '',
         job_category: '',
-        category:'',
-        participation_type:'',
+        category: '',
+        participation_type: '',
     });
 
     const fetchJobs = async () => {
@@ -499,7 +499,7 @@ const StudentDashboard = () => {
 
                         )}
                     </section>
-                    <FeedbackModal />
+                        <FeedbackModal />
                 </div>
             </div>
         </div>

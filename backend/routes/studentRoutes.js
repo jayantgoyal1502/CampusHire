@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Route to register student with resumes
-router.post("/register", upload.any(), async (req, res) => {
+router.post("/register", upload.array("resumes"), async (req, res) => {
     try {
         const { rollnum, password, name, resumesMeta, cgpa, branch, phone, email, course, graduation_year } = req.body;
 

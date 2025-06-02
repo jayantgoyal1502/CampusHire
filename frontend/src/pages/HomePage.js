@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import AboutFloating from "../components/AboutFloating";
 
 const HomePage = () => {
     return (
@@ -45,6 +46,7 @@ const HomePage = () => {
                         Admin
                     </Link>
                 </div>
+                <AboutFloating />
             </div>
         </div>
     );

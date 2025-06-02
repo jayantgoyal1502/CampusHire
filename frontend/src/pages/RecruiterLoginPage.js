@@ -10,7 +10,7 @@ const RecruiterLoginPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post("http://localhost:5001/api/recruiters/login", { contact_email: email, password });
+            const { data } = await axios.post("https://campushire-ivb1.onrender.com/api/recruiters/login", { contact_email: email, password });
             localStorage.setItem("token", data.token);
             navigate("/dashboard/recruiter");
         } catch (error) {

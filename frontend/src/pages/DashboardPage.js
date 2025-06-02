@@ -15,7 +15,7 @@ const DashboardPage = () => {
 
         const fetchJobs = async () => {
             try {
-                const { data } = await axios.get("http://localhost:5001/api/jobs", {
+                const { data } = await axios.get("https://campushire-ivb1.onrender.com/api/jobs", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setJobs(data);

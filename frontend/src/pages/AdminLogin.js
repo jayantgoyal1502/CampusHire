@@ -10,7 +10,7 @@ const AdminLogin = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post("http://localhost:5001/api/admin/login", { email, password });
+            const { data } = await axios.post("https://campushire-ivb1.onrender.com/api/admin/login", { email, password });
             localStorage.setItem("token", data.token);
             navigate("/dashboard/admin");
         } catch (error) {

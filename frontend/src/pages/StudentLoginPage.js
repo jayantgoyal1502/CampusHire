@@ -10,7 +10,7 @@ const StudentLoginPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post("http://localhost:5001/api/students/login", { rollnum, password });
+            const { data } = await axios.post("https://campushire-ivb1.onrender.com/api/students/login", { rollnum, password });
             localStorage.setItem("token", data.token);
             navigate("/dashboard/student");
         } catch (error) {

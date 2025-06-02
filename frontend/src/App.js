@@ -11,6 +11,7 @@ import DashboardPage from "./pages/DashboardPage";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import AboutFloating from "./components/AboutFloating";
 import './index.css';
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
                     <Route path="/dashboard/student" element={<StudentDashboard />} />
                     <Route path="/dashboard/admin" element={<AdminDashboard />} />
                 </Routes>
+                <AboutFloating />
             </div>
         </div>
     );
